@@ -4,6 +4,11 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 
+/Library
+/Logs
+/UserSettings
+
+
 # Other files and folders
 .settings/
 

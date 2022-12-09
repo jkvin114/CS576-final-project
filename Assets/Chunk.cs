@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public enum GridEntry
@@ -38,12 +39,12 @@ public class Chunk
     internal float[] obstacleScales;
     private Chunk lastChunk;
     internal List<int> pathEnds;
-
-    private bool isHard=false;
-    private bool fixedGeneration=false;
+    bool isEmpty=false;
+    ObstacleGenerator obsgen;
     internal int food = -1;
-    public Chunk(int pos, Level level,Chunk lastChunk)
+    public Chunk(int pos, Level level, Chunk lastChunk, bool isEmpty)
     {
+        this.isEmpty= isEmpty;
         this.lastChunk= lastChunk;
         biomeNoise = Mathf.PerlinNoise((pos + Level.biomeSeed) / 20, 0);
         decorationNoise = Mathf.PerlinNoise((pos + Level.decorationSeed) / 10, 0);
@@ -52,22 +53,46 @@ public class Chunk
         biome.chunkpos = pos;
         this.level = level;
 
-        isHard = Random.Range(0,8)<=level.difficulty-2;
         //difficulty 0~1 : 0%, difficulty 5: 50%, difficulty 9: 100%
         
     }
 
     Vector3 getCoord(int x, int lane)
     {
-        return new Vector3(pos * Level.chunkLength + (((float)x -0.5f) / 12.0f) * Level.chunkLength,Level.bottomY, level.laneCoordinates[lane]);
+        return new Vector3(pos * Level.chunkLength + (((float)x -0.5f) / 12.0f) * Level.chunkLength,Level.bottomY, Level.laneCoordinates[lane]);
     }
     Vector3 getItemCoord(int x, int lane)
     {
-        return new Vector3(pos * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength, 1.42f, level.laneCoordinates[lane]);
+        return new Vector3(pos * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength, 1.42f, Level.laneCoordinates[lane]);
     }
-    
+    public void spawnEnemy(float playerSpeed)
+    {
+        if(isEmpty) return;
+        foreach (int[] coord in obsgen.bears)
+        {
+            if (coord[1]==4 || (Random.Range(0, 2) == 0 && coord[1] != 0))
+            {
+                Vector3 pos = getCoord(coord[0], coord[1]);
+                GameObject b = placeObject(level.bear, new Vector3(pos.x, pos.y, Level.laneCoordinates[0] + Level.laneWidth * 0.5f), Quaternion.Euler(0, 180, 0));
+                level.Coroutine(moveEnemy(b, (14f + coord[0] * 0.2f )/ playerSpeed , pos,(int)Direction.RIGHT ,playerSpeed));
+            }
+            else
+            {
+                Vector3 pos = getCoord(coord[0], coord[1]);
+                GameObject b = placeObject(level.bear, new Vector3(pos.x, pos.y, Level.laneCoordinates[4] - Level.laneWidth * 0.5f), Quaternion.Euler(0, 0, 0));
+                level.Coroutine(moveEnemy(b, (14f + coord[0] * 0.2f )/ playerSpeed , pos, (int)Direction.LEFT, playerSpeed));
+            }
+        }
+    }
+    public IEnumerator moveEnemy(GameObject enemy,float delay, Vector3 pos, int d,float speed)
+    {       
+        yield return new WaitForSeconds(delay);
+        enemy.GetComponent<Enemy>().StartMoveTo(speed, pos, d);
+        yield return null;
+    }
     public void placeGem(int row, int lane,int type)
     {
+        if (isEmpty) return;
         GameObject gem = level.gem1;
         if (type == 2) gem = level.gem2;
         if (type == 3) gem = level.gem3;
@@ -76,6 +101,7 @@ public class Chunk
     }
     public void placeFood(int row, int lane, bool isKey)
     {
+        if (isEmpty) return;
         GameObject food = level.food2;
         if (isKey) food = level.food1;
         food = placeObject(food, getItemCoord(row, lane), Quaternion.identity);
@@ -83,6 +109,7 @@ public class Chunk
     }
     public void placeObstacle(int obs,int row,int lane)
     {
+        if (isEmpty) return;
         Quaternion rot = Quaternion.Euler(0, 0, 0);
         if (obs == 18 || obs == 19 || obs == 11)
         {
@@ -94,6 +121,7 @@ public class Chunk
     }
     public void placeLongObstacle(int obs, int row, int lane, int length, int width)
     {
+        if (isEmpty) return;
         Vector3 pos = getCoord(row, lane);
         int yRot = 0;
         if (length == 2) pos = (pos + getCoord(row + 1, lane)) / 2.0f;
@@ -113,7 +141,7 @@ public class Chunk
     }
     public GameObject placeObject(GameObject prefab, Vector3 pos,Quaternion rot)
     {
-        GameObject feature = Level.InstantiateObj(prefab, pos, rot);
+        GameObject feature = level.InstantiateObj(prefab, pos, rot);
     //    objects.Add(feature);
         feature.transform.parent = ground.transform;
         return feature;
@@ -126,11 +154,11 @@ public class Chunk
         }
         Level.DestroyObj(ground);
     }
-    public void generate(int foodId)
+    public void generate(bool hasFood)
     {
         Debug.Log(biome.getTerrainObject());
         float startPos = pos * Level.chunkLength;
-        ground = Level.InstantiateObj(biome.getTerrainObject(), new Vector3(0, 0, 0), Quaternion.identity);
+        ground = level.InstantiateObj(biome.getTerrainObject(), new Vector3(0, 0, 0), Quaternion.identity);
 
         ground.AddComponent<BoxCollider>();
         ground.GetComponent<BoxCollider>().size = new Vector3(1.0f, 1.0f, 1.0f);
@@ -142,8 +170,8 @@ public class Chunk
         {
             lastPathEnds = lastChunk.pathEnds;
         }
-        ObstacleGenerator obsgen = ObstacleGenerator.create(pos, level.difficulty, lastPathEnds);
-        obsgen.Generate(Random.Range(0,2)==0);
+        obsgen = ObstacleGenerator.create(pos, level.difficulty, lastPathEnds);
+        obsgen.Generate(hasFood);
         pathEnds = obsgen.pathEnds;
 
         obsgen.addObstacles(this);

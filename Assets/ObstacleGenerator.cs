@@ -39,11 +39,11 @@ public abstract class ObstacleGenerator
     }
     public static ObstacleGenerator create(int pos,  int difficulty, List<int> prevEnds)
     {
-        if (pos % 30 > 100)
-        {
-            return new FixedObstacleGenerator(pos,difficulty, prevEnds);
-        }
-        else return new RandomObstacleGenerator(pos,  difficulty, prevEnds);
+     //   if (pos % 10 > 8)
+      //  {
+      //      return new FixedObstacleGenerator(pos,difficulty, prevEnds);
+      //  }
+        return new RandomObstacleGenerator(pos,  difficulty, prevEnds);
     }
     protected bool randBool()
     {
@@ -111,6 +111,7 @@ public abstract class ObstacleGenerator
                         break;
                     case GridInit.ENEMY:
                         //chunk.placeObstacle(8, i, j);
+                        if(isHard && Random.Range(0,4)==0) chunk.placeGem(i, j, 1);
                         break;
                 }
             }
@@ -237,7 +238,7 @@ class RandomObstacleGenerator : ObstacleGenerator
             if (hasFood && foodRow == i) continue;
 
             int enemyLane = Random.Range(0, LANES);
-            if(Random.Range(0, 20) <= difficulty - 1 && grid[i, enemyLane] == GridInit.OBSTACLE)
+            if(Random.Range(0, 30) <= difficulty - 1 && grid[i, enemyLane] == GridInit.OBSTACLE)
             {
                 //bear
                 if (Random.Range(0,3)<2)

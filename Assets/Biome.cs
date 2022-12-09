@@ -1,8 +1,7 @@
 
-using UnityEditor.Experimental.GraphView;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
+
 
 public abstract class Biome
 {
@@ -13,7 +12,11 @@ public abstract class Biome
     protected static float TREE_SCALE = 0.15f;
     protected static float GRASS_SCALE = 0.5f;
     protected Vector3 FENCE_SCALE = new Vector3(0.2f,0.2f,0.2f);
-    public int[] obstaclePool;
+    internal int[] obstaclePool;
+    internal int[] longObstacles_2=new int[3];
+    internal int[] longObstacles_3 = new int[3];
+
+    internal int[] fixedObstacle = new int[6];
     protected Biome(TerrainType type, Level level,Chunk chunk)
     {
         
@@ -80,10 +83,26 @@ public abstract class Biome
     {
         return Random.Range(0.6f, 1.5f);
     }
-    public virtual int getObstacle(int gridPos)
+    public virtual int getObstacle()
     {
         return obstaclePool[Random.Range(0, obstaclePool.Length)];
        // return Random.Range(0, 18);
+    }
+    public int getRandomFixedObstacle(int type)
+    {
+        return fixedObstacle[type*2+Random.Range(0,2)];
+    }
+    public int getFixedObstacle(int index)
+    {
+        return fixedObstacle[index];
+    }
+
+
+    public virtual int getLongObstacle(int length)
+    {
+        if (length == 2) return longObstacles_2[Random.Range(0, longObstacles_2.Length)];
+        else return longObstacles_3[Random.Range(0, longObstacles_3.Length)];
+
     }
     public virtual void populate()
     {
@@ -99,14 +118,14 @@ public abstract class Biome
         {
 
             float x = Random.Range(startPos, startPos + Level.chunkLength);
-            float z = Random.Range(Level.leftBound, Level.terrainLeftBound);
+            float z = Random.Range(Level.leftBound+0.15f, Level.terrainLeftBound);
             // Debug.Log(x);
             spawnFeatureAt(prefab, x, z, size);
         }
         for (int i = 0; i < attempts / 2; i++)
         {
             float x = Random.Range(startPos, startPos + Level.chunkLength);
-            float z = Random.Range(Level.terrainRightBound, Level.rightBound);
+            float z = Random.Range(Level.terrainRightBound, Level.rightBound-0.15f);
             spawnFeatureAt(prefab, x, z, size);
         }
     }
@@ -160,6 +179,9 @@ class PlainBiome : Biome
     public PlainBiome(TerrainType type, Level level, Chunk chunk): base(type, level,chunk)
     {
         obstaclePool = new int[] { 0, 0, 0, 1, 1, 1, 5, 6, 7, 12, 14,18,18 };
+        longObstacles_2 = new int[3] {0,1,2 };
+        longObstacles_3 = new int[3] {4,5,6};
+        fixedObstacle=new int[6] { 0,5,0,2,4,5};
     }
 
     public override void populate()
@@ -171,11 +193,6 @@ class PlainBiome : Biome
             spawnFeatures(level.flowers[i], chunkpos, flowerCount, GRASS_SCALE);
         }
     }
-    public override int getObstacle(int gridPos)
-    {
-        
-        return base.getObstacle(gridPos);
-    }
 
 }
 class RockBiome : Biome
@@ -186,13 +203,15 @@ class RockBiome : Biome
         //more rocks
         if (chunk.decorationNoise > 0.5f)
         {
-
             obstaclePool = new int[] { 12, 13, 14, 15, 16, 17, 12, 13, 14, 15, 16, 17, 5, 6, 7, 9, 10 };
         }
         else //more dead plants
         {
-            obstaclePool = new int[] { 12, 13, 14, 15, 16, 17, 9, 10, 9, 10, 5, 6, 7, 9, 10 };
+            obstaclePool = new int[] { 12, 14, 15, 9, 10, 9, 10, 9, 10, 9, 10, 9, 10, 5, 6, 7, 9, 10 };
         }
+        longObstacles_2 = new int[] { 2,3,3 };
+        longObstacles_3 = new int[] { 6,7,7 };
+        fixedObstacle = new int[6] {12,11, 2,3,6,7 };
     }
 
 
@@ -200,8 +219,13 @@ class RockBiome : Biome
     {
         for(int i = 0; i < 4; i++)
         {
+            int treeCount = Random.Range(5, 10);
+            if(chunk.decorationNoise > 0.5f)
+            {
+                treeCount = Random.Range(0, 6) - 3;
+            }
           //  spawnFeatures(level.rocks[i], chunkpos, 10, TREE_SCALE);
-            spawnFeatures(level.dead_plants[Random.Range(0,4)], chunkpos, Random.Range(0, 10)-3, TREE_SCALE);
+            spawnFeatures(level.dead_plants[Random.Range(0,4)], chunkpos, treeCount, TREE_SCALE);
         }
         spawnFeatures(level.dead_plants[4], chunkpos, Random.Range(0, 70), GRASS_SCALE);
 
@@ -219,8 +243,9 @@ class ForestBiome : Biome
 {
     public ForestBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
     {
-
-
+        longObstacles_2 = new int[3] { 0, 1, 2 };
+        longObstacles_3 = new int[3] { 4, 5, 6 };
+        fixedObstacle = new int[6] { 2,4, 0, 2, 5,6 };
         //pine trees
         if (chunk.decorationNoise > 0.40f && chunk.decorationNoise < 0.60f)
         {
@@ -269,6 +294,9 @@ class MountainBiome : Biome
 {
     public MountainBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
     {
+        longObstacles_2 = new int[3] { 0, 2, 2 };
+        longObstacles_3 = new int[3] { 4, 5, 6 };
+        fixedObstacle = new int[6] { 4, 6, 0, 2, 4,5 };
         //pine trees
         if (chunk.decorationNoise > 0.5f)
         {
@@ -305,6 +333,9 @@ class RockyMountainBiome : Biome
 {
     public RockyMountainBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
     {
+        fixedObstacle = new int[6] { 13,10, 2, 3, 6, 7 };
+        longObstacles_2 = new int[] { 2, 3, 3 };
+        longObstacles_3 = new int[] { 6, 7, 7 };
         //more rocks
         if (chunk.decorationNoise > 0.5f)
         {
@@ -313,7 +344,7 @@ class RockyMountainBiome : Biome
         }
         else //more dead plants
         {
-            obstaclePool = new int[] { 12, 13, 14, 15, 16, 17, 9, 10, 9, 10, 5, 6, 7, 9, 10 };
+            obstaclePool = new int[] { 12, 14, 15, 9,10,9,10,9,10, 9, 10, 9, 10, 5, 6, 7, 9, 10 };
         }
     }
 
@@ -323,8 +354,13 @@ class RockyMountainBiome : Biome
        // spawnFeatures(level.light_plants[0], chunkpos, 4, GRASS_SCALE);
         for (int i = 0; i < 3; i++)
         {
+            int treeCount = Random.Range(5, 10);
+            if (chunk.decorationNoise > 0.5f)
+            {
+                treeCount = Random.Range(0, 4) - 3;
+            }
             //  spawnFeatures(level.rocks[i], chunkpos, 10, TREE_SCALE);
-            spawnFeatures(level.dead_plants[Random.Range(0, 4)], chunkpos, Random.Range(0, 6) - 3, TREE_SCALE);
+            spawnFeatures(level.dead_plants[Random.Range(0, 4)], chunkpos, treeCount, TREE_SCALE);
             //spawnFeatures(level.light_plants[Random.Range(1, 3)], chunkpos, 4, GRASS_SCALE);
 
         }

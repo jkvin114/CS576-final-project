@@ -50,7 +50,8 @@ public class Level : MonoBehaviour
     public GameObject[] flowers;
     public GameObject[] light_plants;
 
-    public GameObject[] obsatcles;
+    public GameObject[] obstacles;
+    public GameObject[] longObstacles;
 
     private LinkedList<Chunk> chunks=new();
 
@@ -58,20 +59,27 @@ public class Level : MonoBehaviour
     internal float[] laneCoordinates=new float[5];
     internal float[] laneBounds = new float[6];
     private int numTerrains=0;
+    internal int difficulty = 3;
 
+    public GameObject gem1;
+    public GameObject gem2;
+    public GameObject gem3;
+
+    public GameObject food1;
+    public GameObject food2;
     // Start is called before the first frame update
     void Start()
     {
-        biomeSeed = Random.Range(0.0f, 10);
-        decorationSeed = Random.Range(0.0f, 10);
+        biomeSeed = Random.Range(0.0f, 20);
+        decorationSeed = Random.Range(0.0f, 0);
         laneBounds[0] = leftBound;
         for (int i = 0; i < 5; i++)
-        {
+        {   
             laneCoordinates[i] = leftBound - laneWidth * i - laneWidth/2;
             laneBounds[i] = leftBound - laneWidth * (i+1);
             for(int j=0; j < 5; j++)
             {
-
+                continue;
                 GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 cube.transform.position = new Vector3(0.5f*j, bottomY, laneBounds[i]);
                 cube.transform.localScale = new Vector3(0.02f, 0.2f, 0.02f);
@@ -87,18 +95,18 @@ public class Level : MonoBehaviour
         return;
        
     }
-    IEnumerator generate()
+    public IEnumerator generate()
     {
-        int count = 20;
+        int count = 10;
         for(int i=0;i<count; i++) {
             createChunk();
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.3f);
 
         }
         yield return null;
         for (int i = 0; i < 5; i++)
         {
-          //  deleteEarliestChunk();
+            deleteEarliestChunk();
             yield return new WaitForSeconds(0.2f);
 
         }
@@ -121,13 +129,15 @@ public class Level : MonoBehaviour
         }
     }
 
-    void createChunk()
+    public void createChunk()
     {
-        if(chunks.Count > 0) {
+        Chunk lastChunk=null;
+        if (chunks.Count > 0) {
             chunks.Last.Value.populate();
+            lastChunk = chunks.Last.Value;
         }
-        Chunk chunk = new(numTerrains,this);
-        chunk.generate();
+        Chunk chunk = new(numTerrains,this,lastChunk);
+        chunk.generate(-1);
         numTerrains++;
         chunks.AddLast(chunk);
     }

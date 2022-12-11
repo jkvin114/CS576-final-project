@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
+using TMPro;
+using System;
 
 public class Timer : MonoBehaviour
 {
@@ -18,6 +20,9 @@ public class Timer : MonoBehaviour
     public GameObject foodList;
     public GameObject tracker;
 
+    public TMP_Text currentScoreText;
+    public int currentScore;
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +32,8 @@ public class Timer : MonoBehaviour
         startTimeMemory = 3f;
         currTime = startTime;
         currTimeMemory = startTimeMemory;
+
+        currentScore = 0;
     }
 
     // Update is called once per frame
@@ -37,6 +44,8 @@ public class Timer : MonoBehaviour
         counterText.text = currTime.ToString("0");
         counterTextMemory.text = currTimeMemory.ToString("0");
 
+        currentScoreText.text = currentScore.ToString();
+
         if(currTime <= 0) {
             SceneManager.LoadScene("GameOver");
         }
@@ -46,5 +55,29 @@ public class Timer : MonoBehaviour
             counterTextMemory.enabled = false;
             disappearText.enabled = false;
         }
+    }
+
+    public void HitsNormalGem() {
+        currentScore += 5;
+    }
+
+    public void HitsSpecialGem() {
+        currentScore += 20;
+    }
+
+    public void HitsCorrectFood() {
+        currentScore += 50;
+    }
+
+    public void HitsWrongFood() {
+        currentScore -= 10;
+    }
+
+    public void CompletesList() {
+        currentScore += 100;
+    }
+
+    public void TimeOver() {
+        currentScore -= 100;
     }
 }

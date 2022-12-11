@@ -613,6 +613,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu: {fileID: 900164157}
+  currentScoreText: {fileID: 1556362573}
+  currentScore: 0
 --- !u!1 &218176509
 GameObject:
   m_ObjectHideFlags: 0
@@ -3545,7 +3547,7 @@ GameObject:
   - component: {fileID: 1556362574}
   - component: {fileID: 1556362573}
   m_Layer: 5
-  m_Name: Text (TMP) (2)
+  m_Name: CurrentScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4271,7 +4273,7 @@ GameObject:
   - component: {fileID: 1890599010}
   - component: {fileID: 1890599009}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TotalScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

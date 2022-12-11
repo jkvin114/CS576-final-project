@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
+
 public enum TerrainType
 {
     PLAIN = 0,
@@ -18,7 +20,7 @@ public class Level : MonoBehaviour
     public GameObject forest_terrain;
     public GameObject mountain_terrain;
     public GameObject rocky_mountain_terrain;
-
+    public GameObject player;
     public GameObject fence1;
     public GameObject fence2;
 
@@ -55,11 +57,12 @@ public class Level : MonoBehaviour
 
     private LinkedList<Chunk> chunks=new();
 
-    internal float laneWidth = Mathf.Abs(rightBound - leftBound) / 5;
-    internal float[] laneCoordinates=new float[5];
+    internal static float laneWidth = 0.41f;
+    internal static float[] laneCoordinates= new float[5] { 1.745f, 1.335f, 0.925f, 0.515f, 0.105f };
     internal float[] laneBounds = new float[6];
     private int numTerrains=0;
-    internal int difficulty = 3;
+    internal int difficulty = 0;
+    public int difficultyIncreaseRate;
 
     public GameObject gem1;
     public GameObject gem2;
@@ -67,52 +70,59 @@ public class Level : MonoBehaviour
 
     public GameObject food1;
     public GameObject food2;
+
+    public GameObject bear;
+    public GameObject eagle;
+
+    bool isGameStarted =false;
+    float currentPlayerSpeed = 0;
     // Start is called before the first frame update
     void Start()
     {
         biomeSeed = Random.Range(0.0f, 20);
         decorationSeed = Random.Range(0.0f, 0);
         laneBounds[0] = leftBound;
+        Debug.Log(laneWidth);
         for (int i = 0; i < 5; i++)
         {   
-            laneCoordinates[i] = leftBound - laneWidth * i - laneWidth/2;
+          //  laneCoordinates[i] = leftBound - laneWidth * i - laneWidth/2;
             laneBounds[i] = leftBound - laneWidth * (i+1);
-            for(int j=0; j < 5; j++)
-            {
-                continue;
-                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                cube.transform.position = new Vector3(0.5f*j, bottomY, laneBounds[i]);
-                cube.transform.localScale = new Vector3(0.02f, 0.2f, 0.02f);
-            }
-
 
         }
-       // terrains =new GameObject[5]{plain_terrain ,rocky_terrain, forest_terrain ,mountain_terrain,rocky_mountain_terrain};
-       // fences = new GameObject[2] { fence1, fence2 };
-        StartCoroutine(generate());
+        //  player.AddComponent<BoxCollider>();
+        // player.AddComponent<Rigidbody>();
+        // player.AddComponent<CharacterController>();
+
+        //  player.AddComponent<Chicken>();
+        player.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        player.transform.position = new Vector3(-1, bottomY, laneCoordinates[2]);
+        player.transform.rotation = Quaternion.Euler(0, 90, 0);
+        
+        //Instantiate(player, , );
+        // terrains =new GameObject[5]{plain_terrain ,rocky_terrain, forest_terrain ,mountain_terrain,rocky_mountain_terrain};
+        // fences = new GameObject[2] { fence1, fence2 };
+        StartCoroutine(initlalGeneration());
 
         
         return;
        
     }
-    public IEnumerator generate()
+    public void Coroutine(IEnumerator func) {
+        StartCoroutine(func);
+    }
+
+    public IEnumerator initlalGeneration()
     {
-        int count = 10;
+        int count = 1;
         for(int i=0;i<count; i++) {
-            createChunk();
+            createChunk(true);
             yield return new WaitForSeconds(0.3f);
 
         }
-        yield return null;
-        for (int i = 0; i < 5; i++)
-        {
-            deleteEarliestChunk();
-            yield return new WaitForSeconds(0.2f);
-
-        }
+        isGameStarted=true;
         yield return null;
     }
-    public static GameObject InstantiateObj(GameObject gameObject,Vector3 pos,Quaternion rotation)
+    public GameObject InstantiateObj(GameObject gameObject,Vector3 pos,Quaternion rotation)
     {
         return Instantiate(gameObject, pos, rotation);
     }
@@ -121,23 +131,36 @@ public class Level : MonoBehaviour
 
         Destroy(gameObject);
     }
-    void generateBiome(int type,int size)
+    private void checkCreateChunk()
     {
-        for (int i = 0; i < size; i++)
+        if(player.transform.position.x > chunks.Last.Value.pos*chunkLength - chunkLength * 2 && isGameStarted)
         {
-           // generateChunk(type);
+            if (chunks.Last.Value.pos % difficultyIncreaseRate == difficultyIncreaseRate-1)
+            {
+                difficulty++;
+                currentPlayerSpeed = player.GetComponent<Chicken>().increaseSpeed();
+            }
+
+            createChunk(false);
+           
+            if(chunks.Count > 4)
+            {
+                deleteEarliestChunk();
+            }
+            
         }
     }
 
-    public void createChunk()
+    public void createChunk(bool isEmpty)
     {
         Chunk lastChunk=null;
         if (chunks.Count > 0) {
             chunks.Last.Value.populate();
             lastChunk = chunks.Last.Value;
         }
-        Chunk chunk = new(numTerrains,this,lastChunk);
-        chunk.generate(-1);
+        Chunk chunk = new(numTerrains,this,lastChunk, isEmpty);
+        chunk.generate(Random.Range(0,5)==0);
+        chunk.spawnEnemy(currentPlayerSpeed);
         numTerrains++;
         chunks.AddLast(chunk);
     }
@@ -147,40 +170,11 @@ public class Level : MonoBehaviour
         chunks.RemoveFirst();
     }
    
-    void generateChunk(int type)
-    {
-
-
-        float startPos = numTerrains * chunkLength;
-        GameObject terrain = Instantiate(terrains[type], new Vector3(0, 0, 0), Quaternion.identity);
-        
-        terrain.AddComponent<BoxCollider>();
-        terrain.GetComponent<BoxCollider>().size = new Vector3(1.0f, 1.0f, 1.0f);
-        terrain.transform.position = new Vector3(startPos, Random.Range(0.001f, 0.0f), 0);
-
-        float fencePos = startPos-3;
-        while (fencePos < startPos+chunkLength/2)
-        {
-            fencePos += Random.Range(0.6f, 1.5f);
-            GameObject fence = Instantiate(fences[Random.Range(0, 2)], new Vector3(0, 0, 0), Quaternion.identity);
-            fence.transform.position = new Vector3(fencePos, bottomY, rightBound);
-            fence.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-        }
-        fencePos = startPos-3;
-        while (fencePos < startPos + chunkLength/2)
-        {
-            fencePos += Random.Range(0.6f, 1.5f);
-            GameObject fence = Instantiate(fences[Random.Range(0, 2)], new Vector3(0, 0, 0), Quaternion.identity);
-            fence.transform.position = new Vector3(fencePos, bottomY, leftBound);
-            fence.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-        }
-        numTerrains++;
-
-    }
 
     // Update is called once per frame
     void Update()
     {
+        checkCreateChunk();
         //                    GameObject house = Instantiate(house_prefab, new Vector3(0, 0, 0), Quaternion.identity);
         //house.AddComponent<BoxCollider>();
     }

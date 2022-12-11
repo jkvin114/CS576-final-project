@@ -39,11 +39,11 @@ public abstract class ObstacleGenerator
     }
     public static ObstacleGenerator create(int pos,  int difficulty, List<int> prevEnds)
     {
-        if (pos % 30 > 100)
-        {
-            return new FixedObstacleGenerator(pos,difficulty, prevEnds);
-        }
-        else return new RandomObstacleGenerator(pos,  difficulty, prevEnds);
+     //   if (pos % 10 > 8)
+      //  {
+      //      return new FixedObstacleGenerator(pos,difficulty, prevEnds);
+      //  }
+        return new RandomObstacleGenerator(pos,  difficulty, prevEnds);
     }
     protected bool randBool()
     {
@@ -70,7 +70,7 @@ public abstract class ObstacleGenerator
 
             for (int j = 0; j < 5; j++)
             {
-                Debug.Log(grid[i, j]);
+               // Debug.Log(grid[i, j]);
                 int longobs = 0;
                 switch (grid[i, j])
                 {
@@ -111,6 +111,7 @@ public abstract class ObstacleGenerator
                         break;
                     case GridInit.ENEMY:
                         //chunk.placeObstacle(8, i, j);
+                        if(isHard && Random.Range(0,4)==0) chunk.placeGem(i, j, 1);
                         break;
                 }
             }
@@ -237,23 +238,25 @@ class RandomObstacleGenerator : ObstacleGenerator
             if (hasFood && foodRow == i) continue;
 
             int enemyLane = Random.Range(0, LANES);
-            if(Random.Range(0, 20) <= difficulty - 1 && grid[i, enemyLane] == GridInit.OBSTACLE)
+            if(Random.Range(0, 30) <= difficulty - 2 && grid[i, enemyLane] == GridInit.OBSTACLE)
             {
                 //bear
                 if (Random.Range(0,3)<2)
                 {
                     for (int j = 0; j < LANES - 1; j++) {
-                        if (j == enemyLane) grid[i, enemyLane] = GridInit.ENEMY;
-                        else if(grid[i, j]==GridInit.OBSTACLE) grid[i,j]= GridInit.ENEMY_PATH;
+                     //   if (j == enemyLane) grid[i, enemyLane] = GridInit.ENEMY;
+                        if(grid[i, j]==GridInit.OBSTACLE) grid[i,j]= GridInit.ENEMY_PATH;
                     }
                     bears.Add(new int[] { i, enemyLane });
                 }
                 else//eagle
                 {
-                    grid[i, enemyLane] = GridInit.ENEMY;
+                  //  grid[i, enemyLane] = GridInit.ENEMY;
                     eagles.Add(new int[] { i, enemyLane });
                 }
+                grid[i, enemyLane] = GridInit.ENEMY;
             }
+
         }
 
 
@@ -460,7 +463,6 @@ class FixedObstacleGenerator : ObstacleGenerator
         {
             for (int j = 0; j < 5; j++)
             {
-                Debug.Log(grid[i, j]);
                 int longobs = 0;
                 switch (grid[i, j])
                 {

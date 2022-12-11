@@ -13,32 +13,83 @@ public class Chicken : MonoBehaviour
     private Animator animation_controller;
     private CharacterController character_controller;
     private float velocity;
-
+    private int lane;
+    private float directionChangeBlockingTime = 0;
+    public float directionChangeSpeed;
+    float directionChangeDelay = 2;
+    Direction currentDirection = Direction.FORWARD;
     void Start()
     {
         animation_controller = GetComponent<Animator>();
         character_controller = GetComponent<CharacterController>();
         movement_direction = new Vector3(0.0f, 0.0f, 0.0f);
-        running_velocity = 3.5f;
-        side_velocity = 3.0f;
-        velocity = 0.0f;
-    }
+        running_velocity = 1.4f;
+        side_velocity = 0.5f;
+        velocity = 0.1f;
+        lane = 2;
+        animation_controller.SetBool("Walk", true);
+        animation_controller.speed = running_velocity;
 
+    }
+    public float increaseSpeed()
+    {
+        if(running_velocity<=4f)
+            running_velocity += 0.2f;
+        animation_controller.speed = running_velocity;
+        if (running_velocity > 3.0f) {
+            animation_controller.SetBool("Run", true);
+            animation_controller.SetBool("Walk", false);
+        } 
+        return running_velocity;    
+    }
     void Update()
     {
-        bool going_left = Input.GetKey("a");
-        bool going_right = Input.GetKey("d");
+        bool going_left = Input.GetKeyDown(KeyCode.LeftArrow);
+        bool going_right = Input.GetKeyDown(KeyCode.RightArrow);
+        float laneOffset = 0;
+        if (directionChangeBlockingTime <0)
+        {
+            currentDirection = Direction.FORWARD;
+        }
 
-        if(going_left && !going_right) {
-            velocity = -1.0f;
-        } else if(!going_left && going_right) {
-            velocity = 1.0f;
+        if (going_left && !going_right && directionChangeBlockingTime < 0) {
+            Debug.Log("left");
+            //  velocity = -1.0f;
+            if (lane > 0) { 
+                lane--;
+                directionChangeBlockingTime = directionChangeDelay;
+                currentDirection = Direction.LEFT;
+            }
+        } else if(!going_left && going_right && directionChangeBlockingTime < 0) {
+            // velocity = 1.0f;
+            if (lane < 4) { 
+                lane++;
+                directionChangeBlockingTime = directionChangeDelay;
+                currentDirection = Direction.RIGHT;
+            }
         } else {
             velocity = 0.0f;
         }
+        directionChangeBlockingTime -= Time.deltaTime * running_velocity * directionChangeSpeed;
 
-        movement_direction = new Vector3(side_velocity * velocity, 0.0f, running_velocity);
+        if (directionChangeBlockingTime >= 0)
+        {
+            if (currentDirection == Direction.LEFT)
+            {
+                laneOffset = -Level.laneWidth * directionChangeBlockingTime / directionChangeDelay;
+            }
+            else if (currentDirection == Direction.RIGHT)
+            {
+                laneOffset = Level.laneWidth * directionChangeBlockingTime / directionChangeDelay;
+            }
+        }
 
-        character_controller.Move(movement_direction * Time.deltaTime);
+        transform.position=new Vector3(transform.position.x+running_velocity*Time.deltaTime,
+        Level.bottomY + (Mathf.Sin(Time.time * 30*running_velocity)+1)/50.0f, Level.laneCoordinates[lane]+ laneOffset);
+            
+
+        //movement_direction = new Vector3(side_velocity * velocity, 0.0f, running_velocity);
+
+        //character_controller.Move(movement_direction * Time.deltaTime);
     }
 }

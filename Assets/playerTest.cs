@@ -21,7 +21,7 @@ public class playerTest : MonoBehaviour
         int count = 3;
         for (int i = 0; i < count; i++)
         {
-            sn.createChunk();
+          //  sn.createChunk();
             yield return new WaitForSeconds(0.2f);
 
         }

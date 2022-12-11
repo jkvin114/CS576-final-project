@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.IO;
 
 public class Timer : MonoBehaviour
@@ -13,13 +14,17 @@ public class Timer : MonoBehaviour
     public float startTimeMemory;
     public Text counterText;
     public Text counterTextMemory;
+    public Text disappearText;
+    public GameObject foodList;
+    public GameObject tracker;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        startTime = 15f;
-        startTimeMemory = 5f;
+        Time.timeScale = 0;
+        startTime = 50f;
+        startTimeMemory = 3f;
         currTime = startTime;
         currTimeMemory = startTimeMemory;
     }
@@ -31,5 +36,15 @@ public class Timer : MonoBehaviour
         currTimeMemory -= 1 * Time.deltaTime;
         counterText.text = currTime.ToString("0");
         counterTextMemory.text = currTimeMemory.ToString("0");
+
+        if(currTime <= 0) {
+            SceneManager.LoadScene("GameOver");
+        }
+        if(currTimeMemory <= 0) {
+            foodList.SetActive(false);
+            tracker.SetActive(true);
+            counterTextMemory.enabled = false;
+            disappearText.enabled = false;
+        }
     }
 }

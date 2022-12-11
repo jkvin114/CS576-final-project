@@ -62,6 +62,7 @@ public class Level : MonoBehaviour
     internal float[] laneBounds = new float[6];
     private int numTerrains=0;
     internal int difficulty = 0;
+    public int difficultyIncreaseRate;
 
     public GameObject gem1;
     public GameObject gem2;
@@ -134,13 +135,12 @@ public class Level : MonoBehaviour
     {
         if(player.transform.position.x > chunks.Last.Value.pos*chunkLength - chunkLength * 2 && isGameStarted)
         {
-            if (chunks.Last.Value.pos % 3 == 2)
+            if (chunks.Last.Value.pos % difficultyIncreaseRate == difficultyIncreaseRate-1)
             {
                 difficulty++;
                 currentPlayerSpeed = player.GetComponent<Chicken>().increaseSpeed();
             }
 
-            Debug.Log("create");
             createChunk(false);
            
             if(chunks.Count > 4)
@@ -159,7 +159,7 @@ public class Level : MonoBehaviour
             lastChunk = chunks.Last.Value;
         }
         Chunk chunk = new(numTerrains,this,lastChunk, isEmpty);
-        chunk.generate(false);
+        chunk.generate(Random.Range(0,5)==0);
         chunk.spawnEnemy(currentPlayerSpeed);
         numTerrains++;
         chunks.AddLast(chunk);

@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     Direction direction = Direction.LEFT;
     Vector3 goalPos;
     float speed = 0;
+    string[] animStates=new string[6] {"Sleep","Eat","Sit","Attack1", "Attack2", "Attack3" };
     void Start()
     {
         
@@ -19,17 +20,21 @@ public class Enemy : MonoBehaviour
         this.speed= speed;
         direction = (Direction)d;
         isMoving= true;
+        GetComponent<Animator>().SetBool(Random.Range(0,4)==0?"Jump": "Run Forward", true);
+        GetComponent<Animator>().speed= speed/2;
     }
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.z < goalPos.z && direction == Direction.RIGHT)
+        if ((transform.position.z < goalPos.z && direction == Direction.RIGHT 
+            || transform.position.z > goalPos.z && direction == Direction.LEFT )
+            && isMoving)
         {
             isMoving=false;
-        }
-        if (transform.position.z > goalPos.z && direction == Direction.LEFT)
-        {
-            isMoving = false;
+            GetComponent<Animator>().SetBool("Run Forward", false);
+            GetComponent<Animator>().SetBool("Jump", false);
+            GetComponent<Animator>().SetBool(animStates[Random.Range(0, animStates.Length)], true);
+
         }
 
         if(isMoving)

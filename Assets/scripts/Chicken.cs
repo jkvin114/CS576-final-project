@@ -27,12 +27,19 @@ public class Chicken : MonoBehaviour
         side_velocity = 0.5f;
         velocity = 0.1f;
         lane = 2;
+        animation_controller.SetBool("Walk", true);
+        animation_controller.speed = running_velocity;
 
     }
     public float increaseSpeed()
     {
         if(running_velocity<=4f)
             running_velocity += 0.2f;
+        animation_controller.speed = running_velocity;
+        if (running_velocity > 3.0f) {
+            animation_controller.SetBool("Run", true);
+            animation_controller.SetBool("Walk", false);
+        } 
         return running_velocity;    
     }
     void Update()
@@ -78,8 +85,8 @@ public class Chicken : MonoBehaviour
         }
 
         transform.position=new Vector3(transform.position.x+running_velocity*Time.deltaTime,
-            transform.position.y, Level.laneCoordinates[lane]+ laneOffset);
-        
+        Level.bottomY + (Mathf.Sin(Time.time * 30*running_velocity)+1)/50.0f, Level.laneCoordinates[lane]+ laneOffset);
+            
 
         //movement_direction = new Vector3(side_velocity * velocity, 0.0f, running_velocity);
 

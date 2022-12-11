@@ -6,7 +6,7 @@ public class DealDamageComponent : MonoBehaviour {
 
     public GameObject hitFX;
 	void DealDamage() {
-        transform.parent.GetComponent<DemoController>().DealDamage(this);
+        //transform.parent.GetComponent<DemoController>().DealDamage(this);
     }
 	
 

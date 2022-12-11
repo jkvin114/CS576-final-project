@@ -83,11 +83,31 @@ public class Chunk
                 level.Coroutine(moveEnemy(b, (14f + coord[0] * 0.2f )/ playerSpeed , pos, (int)Direction.LEFT, playerSpeed));
             }
         }
+        foreach (int[] coord in obsgen.eagles)
+        {
+            Vector3 goalPos = getCoord(coord[0], coord[1]);
+            Vector3 pos = new Vector3(Random.Range(Level.chunkLength * (this.pos-2), Level.chunkLength * (this.pos - 1)), 1.8f
+                , Random.Range(-5,5));
+            Quaternion rot = Quaternion.Euler(0, 90, 0);
+            if (Random.Range(0, 2) == 0)
+            {
+                rot = Quaternion.Euler(0, -90, 0);
+                pos.x = Random.Range(Level.chunkLength * (this.pos+1), Level.chunkLength * (this.pos + 2));
+            }
+            GameObject eagle = placeObject(level.eagle, pos, rot);
+            level.Coroutine(moveFlyingEnemy(eagle, (8.5f + coord[0] * 0.4f) / playerSpeed, 6.0f/playerSpeed, goalPos));
+        }
     }
     public IEnumerator moveEnemy(GameObject enemy,float delay, Vector3 pos, int d,float speed)
-    {       
+    {
         yield return new WaitForSeconds(delay);
         enemy.GetComponent<Enemy>().StartMoveTo(speed, pos, d);
+        yield return null;
+    }
+    public IEnumerator moveFlyingEnemy(GameObject enemy, float delay, float timeSpan, Vector3 pos)
+    {
+        yield return new WaitForSeconds(delay);
+        enemy.GetComponent<FlyingEnemy>().StartMoveTo(timeSpan, pos);
         yield return null;
     }
     public void placeGem(int row, int lane,int type)
@@ -156,7 +176,7 @@ public class Chunk
     }
     public void generate(bool hasFood)
     {
-        Debug.Log(biome.getTerrainObject());
+      //  Debug.Log(biome.getTerrainObject());
         float startPos = pos * Level.chunkLength;
         ground = level.InstantiateObj(biome.getTerrainObject(), new Vector3(0, 0, 0), Quaternion.identity);
 

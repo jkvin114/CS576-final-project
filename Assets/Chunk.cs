@@ -63,7 +63,7 @@ public class Chunk
     }
     Vector3 getItemCoord(int x, int lane)
     {
-        return new Vector3(pos * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength, 1.42f, Level.laneCoordinates[lane]);
+        return new Vector3(pos * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength, 1.38f, Level.laneCoordinates[lane]);
     }
     public void spawnEnemy(float playerSpeed)
     {
@@ -81,6 +81,21 @@ public class Chunk
                 Vector3 pos = getCoord(coord[0], coord[1]);
                 GameObject b = placeObject(level.bear, new Vector3(pos.x, pos.y, Level.laneCoordinates[4] - Level.laneWidth * 0.5f), Quaternion.Euler(0, 0, 0));
                 level.Coroutine(moveEnemy(b, (14f + coord[0] * 0.2f )/ playerSpeed , pos, (int)Direction.LEFT, playerSpeed));
+            }
+        }
+        foreach (int[] coord in obsgen.foxes)
+        {
+            if (coord[1] == 4 || (Random.Range(0, 2) == 0 && coord[1] != 0))
+            {
+                Vector3 pos = getCoord(coord[0], coord[1]);
+                GameObject b = placeObject(level.fox, new Vector3(pos.x, pos.y, Level.laneCoordinates[0] + Level.laneWidth * 0.5f), Quaternion.Euler(0, 180, 0));
+                level.Coroutine(moveFoxEnemy(b, (14f + coord[0] * 0.2f) / playerSpeed, pos, (int)Direction.RIGHT, playerSpeed));
+            }
+            else
+            {
+                Vector3 pos = getCoord(coord[0], coord[1]);
+                GameObject b = placeObject(level.fox, new Vector3(pos.x, pos.y, Level.laneCoordinates[4] - Level.laneWidth * 0.5f), Quaternion.Euler(0, 0, 0));
+                level.Coroutine(moveFoxEnemy(b, (14f + coord[0] * 0.2f) / playerSpeed, pos, (int)Direction.LEFT, playerSpeed));
             }
         }
         foreach (int[] coord in obsgen.eagles)
@@ -104,6 +119,12 @@ public class Chunk
         enemy.GetComponent<Enemy>().StartMoveTo(speed, pos, d);
         yield return null;
     }
+    public IEnumerator moveFoxEnemy(GameObject enemy, float delay, Vector3 pos, int d, float speed)
+    {
+        yield return new WaitForSeconds(delay);
+        enemy.GetComponent<FoxEnemy>().StartMoveTo(speed, pos, d);
+        yield return null;
+    }
     public IEnumerator moveFlyingEnemy(GameObject enemy, float delay, float timeSpan, Vector3 pos)
     {
         yield return new WaitForSeconds(delay);
@@ -120,8 +141,8 @@ public class Chunk
         gem.AddComponent<gem>();
         if (type == 3) gem.tag = "gem_special";
         else gem.tag = "gem";
-        gem.AddComponent<BoxCollider>();
-        gem.GetComponent<BoxCollider>().size = new Vector3(2f,2f,2f);
+       // gem.AddComponent<BoxCollider>();
+       // gem.GetComponent<BoxCollider>().size = new Vector3(2f,2f,2f);
     }
     public void placeFood(int row, int lane, bool isKey)
     {
@@ -144,7 +165,7 @@ public class Chunk
         }
             GameObject obstacle = placeObject(level.obstacles[obs], getCoord(row, lane), rot);
         obstacle.tag = "obstacle";
-        obstacle.AddComponent<BoxCollider>();
+        //obstacle.AddComponent<BoxCollider>();
     }
     public void placeLongObstacle(int obs, int row, int lane, int length, int width)
     {
@@ -164,7 +185,7 @@ public class Chunk
             
         GameObject obstacle = placeObject(level.longObstacles[obs],pos , Quaternion.Euler(0,yRot,0));
         obstacle.tag = "obstacle";
-        obstacle.AddComponent<BoxCollider>();
+       // obstacle.AddComponent<BoxCollider>();
     }
     public GameObject placeObject(GameObject prefab, Vector3 pos,Quaternion rot)
     {

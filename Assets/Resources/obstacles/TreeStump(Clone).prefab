@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 880855453608139215}
   - component: {fileID: 880855453608139214}
   - component: {fileID: 880855453608139213}
+  - component: {fileID: -2455672169912591686}
   m_Layer: 0
   m_Name: TreeStump(Clone)
   m_TagString: Untagged
@@ -84,3 +85,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &-2455672169912591686
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880855453608139211}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.57735705, y: 0.38521752, z: 0.53835917}
+  m_Center: {x: 0.00530684, y: 0.18584101, z: 0.03219819}

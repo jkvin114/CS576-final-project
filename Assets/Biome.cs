@@ -203,11 +203,11 @@ class RockBiome : Biome
         //more rocks
         if (chunk.decorationNoise > 0.5f)
         {
-            obstaclePool = new int[] { 12, 13, 14, 15, 16, 17, 12, 13, 14, 15, 16, 17, 5, 6, 7, 9, 10 };
+            obstaclePool = new int[] {11, 12, 13, 14, 15, 16, 17, 11, 12, 13, 14, 15, 16, 17, 5, 6, 7, 9, 10 };
         }
         else //more dead plants
         {
-            obstaclePool = new int[] { 12, 14, 15, 9, 10, 9, 10, 9, 10, 9, 10, 9, 10, 5, 6, 7, 9, 10 };
+            obstaclePool = new int[] { 11, 12, 14, 15, 9, 10, 9, 10, 11, 9, 10, 11, 9, 10, 11, 5, 6, 7, 9, 10 };
         }
         longObstacles_2 = new int[] { 2,3,3 };
         longObstacles_3 = new int[] { 6,7,7 };
@@ -340,11 +340,11 @@ class RockyMountainBiome : Biome
         if (chunk.decorationNoise > 0.5f)
         {
 
-            obstaclePool = new int[] { 12, 13, 14, 15, 16, 17, 12, 13, 14, 15, 16, 17, 5, 6, 7, 9, 10 };
+            obstaclePool = new int[] { 11, 12, 13, 14, 15, 16, 17, 12, 13, 14, 15, 16, 17, 5, 6, 7, 9, 10 };
         }
         else //more dead plants
         {
-            obstaclePool = new int[] { 12, 14, 15, 9,10,9,10,9,10, 9, 10, 9, 10, 5, 6, 7, 9, 10 };
+            obstaclePool = new int[] { 11, 12, 14, 15, 9,10,11,9,10, 11, 9,10, 11, 5, 6, 7, 9, 10, 11 };
         }
     }
 

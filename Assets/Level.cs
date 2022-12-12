@@ -61,7 +61,7 @@ public class Level : MonoBehaviour
     internal static float[] laneCoordinates= new float[5] { 1.745f, 1.335f, 0.925f, 0.515f, 0.105f };
     internal float[] laneBounds = new float[6];
     private int numTerrains=0;
-    internal int difficulty = 0;
+    internal int difficulty = 27;
     public int difficultyIncreaseRate;
 
     public GameObject gem1;
@@ -73,6 +73,7 @@ public class Level : MonoBehaviour
 
     public GameObject bear;
     public GameObject eagle;
+    public GameObject fox;
 
     bool isGameStarted =false;
     float currentPlayerSpeed = 0;

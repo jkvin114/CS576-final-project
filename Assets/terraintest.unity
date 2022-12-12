@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -158,6 +158,9 @@ MonoBehaviour:
   startTimeMemory: 0
   counterText: {fileID: 0}
   counterTextMemory: {fileID: 0}
+  disappearText: {fileID: 0}
+  foodList: {fileID: 0}
+  tracker: {fileID: 0}
 --- !u!4 &20321663
 Transform:
   m_ObjectHideFlags: 0
@@ -605,6 +608,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -2651994422087877596, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: gem_particle
+      value: 
+      objectReference: {fileID: 168542, guid: 5702e2a6fea804b45b49b70d8feaf7ae, type: 3}
+    - target: {fileID: -2651994422087877596, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
       propertyPath: directionChangeSpeed
       value: 8
       objectReference: {fileID: 0}
@@ -614,7 +621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4303844821561524, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4303844821561524, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
       propertyPath: m_LocalPosition.x

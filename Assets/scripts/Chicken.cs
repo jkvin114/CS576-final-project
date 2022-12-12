@@ -20,6 +20,8 @@ public class Chicken : MonoBehaviour
     Direction currentDirection = Direction.FORWARD;
     private bool isInvulnerable=false;
     private float invulTime = 0;
+    public GameObject gem_particle;
+
     void Start()
     {
         animation_controller = GetComponent<Animator>();
@@ -61,6 +63,8 @@ public class Chicken : MonoBehaviour
         if (other.gameObject.tag == "gem")
         {
             other.gameObject.GetComponent<gem>().Obtain();
+            GameObject gem_p = Instantiate(gem_particle, transform.position, Quaternion.identity);
+            gem_p.GetComponent<ParticleSystem>().Play();
         }
         if (other.gameObject.tag == "gem_special")
         {
@@ -82,7 +86,7 @@ public class Chicken : MonoBehaviour
         if (invulTime < 0 && isInvulnerable)
         {
         //    Color c = gameObject.GetComponent<Renderer>().material.color;
-            c.a = 1;
+           //    c.a = 1;
           //  gameObject.GetComponent<Renderer>().material.color = c;
             isInvulnerable = false;
         }

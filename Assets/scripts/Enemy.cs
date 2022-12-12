@@ -12,7 +12,8 @@ public class Enemy : MonoBehaviour
     string[] animStates=new string[6] {"Sleep","Eat","Sit","Attack1", "Attack2", "Attack3" };
     void Start()
     {
-        
+        gameObject.tag = "obstacle";
+
     }
     public void StartMoveTo(float speed,Vector3 pos,int d)
     {

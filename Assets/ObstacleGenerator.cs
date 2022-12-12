@@ -376,7 +376,8 @@ class RandomObstacleGenerator : ObstacleGenerator
 
             pathList[pathNum].Add(new int[] { row, lane });
 
-            if(!isHard) grid[row+1, lane] = GridInit.EMPTY;
+           // if(!isHard)
+                grid[row+1, lane] = GridInit.EMPTY;
 
             if(direction==Direction.LEFT || direction == Direction.RIGHT)
                direction= Direction.FORWARD;

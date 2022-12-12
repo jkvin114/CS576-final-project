@@ -18,6 +18,8 @@ public class Chicken : MonoBehaviour
     public float directionChangeSpeed;
     float directionChangeDelay = 2;
     Direction currentDirection = Direction.FORWARD;
+    private bool isInvulnerable=false;
+    private float invulTime = 0;
     void Start()
     {
         animation_controller = GetComponent<Animator>();
@@ -42,8 +44,48 @@ public class Chicken : MonoBehaviour
         } 
         return running_velocity;    
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.gameObject.tag);
+        if (other.gameObject.tag == "obstacle" && !isInvulnerable)
+        {
+            isInvulnerable = true;
+            if(running_velocity<3)
+                invulTime = 5;
+            else
+                invulTime = 3;
+            Color c = gameObject.GetComponent<Renderer>().material.color;
+                c.a = 0.5f;
+            gameObject.GetComponent<Renderer>().material.color = c;
+        }
+        if (other.gameObject.tag == "gem")
+        {
+            other.gameObject.GetComponent<gem>().Obtain();
+        }
+        if (other.gameObject.tag == "gem_special")
+        {
+            other.gameObject.GetComponent<gem>().Obtain();
+        }
+        if (other.gameObject.tag == "key_food")
+        {
+
+            other.gameObject.GetComponent<food>().Obtain();
+        }
+        if (other.gameObject.tag == "wrong_food")
+        {
+            other.gameObject.GetComponent<food>().Obtain();
+        }
+    }
     void Update()
     {
+        invulTime -= Time.deltaTime;
+        if (invulTime < 0 && isInvulnerable)
+        {
+        //    Color c = gameObject.GetComponent<Renderer>().material.color;
+            c.a = 1;
+          //  gameObject.GetComponent<Renderer>().material.color = c;
+            isInvulnerable = false;
+        }
         bool going_left = Input.GetKeyDown(KeyCode.LeftArrow);
         bool going_right = Input.GetKeyDown(KeyCode.RightArrow);
         float laneOffset = 0;

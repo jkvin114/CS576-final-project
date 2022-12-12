@@ -117,7 +117,11 @@ public class Chunk
         if (type == 2) gem = level.gem2;
         if (type == 3) gem = level.gem3;
         gem = placeObject(gem, getItemCoord(row, lane), Quaternion.identity);
-        gem.AddComponent<food>();
+        gem.AddComponent<gem>();
+        if (type == 3) gem.tag = "gem_special";
+        else gem.tag = "gem";
+        gem.AddComponent<BoxCollider>();
+        gem.GetComponent<BoxCollider>().size = new Vector3(2f,2f,2f);
     }
     public void placeFood(int row, int lane, bool isKey)
     {
@@ -126,6 +130,9 @@ public class Chunk
         if (isKey) food = level.food1;
         food = placeObject(food, getItemCoord(row, lane), Quaternion.identity);
         food.AddComponent<food>();
+        food.AddComponent<BoxCollider>();
+        if (isKey) food.tag = "key_food";
+        else food.tag = "wrong_food";
     }
     public void placeObstacle(int obs,int row,int lane)
     {

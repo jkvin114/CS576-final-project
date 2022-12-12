@@ -36,7 +36,7 @@ public class Timer : MonoBehaviour
         currTimeMemory -= 1 * Time.deltaTime;
         counterText.text = currTime.ToString("0");
         counterTextMemory.text = currTimeMemory.ToString("0");
-
+    
         if(currTime <= 0) {
             SceneManager.LoadScene("GameOver");
         }

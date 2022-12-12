@@ -38,7 +38,7 @@ public class Timer : MonoBehaviour
         counterTextMemory.text = currTimeMemory.ToString("0");
     
         if(currTime <= 0) {
-            SceneManager.LoadScene("GameOver");
+         //   SceneManager.LoadScene("GameOver");
         }
         if(currTimeMemory <= 0) {
             foodList.SetActive(false);

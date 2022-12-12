@@ -9,7 +9,8 @@ public class Chicken : MonoBehaviour
     public Vector3 movement_direction;
     public float running_velocity;
     public float side_velocity;
-    
+    public Material normalMat;
+    public Material transparentMat;
     private Animator animation_controller;
     private CharacterController character_controller;
     private float velocity;
@@ -44,19 +45,32 @@ public class Chicken : MonoBehaviour
         } 
         return running_velocity;    
     }
+    IEnumerator Shake(float duration, float magnitude)
+    {
+        Vector3 orignalPosition = transform.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float z = transform.position.z+Random.Range(-1f, 1f) * magnitude;
+            float y = transform.position.y+ Random.Range(-1f, 1f) * magnitude;
+
+            transform.position = new Vector3(transform.position.x, y,z);
+            elapsed += Time.deltaTime;
+            yield return 0;
+        }
+        orignalPosition.x = transform.position.x;
+        transform.position = orignalPosition;
+    }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.tag);
         if (other.gameObject.tag == "obstacle" && !isInvulnerable)
         {
+            Debug.Log("obstacle");
             isInvulnerable = true;
-            if(running_velocity<3)
-                invulTime = 5;
-            else
-                invulTime = 3;
-            Color c = gameObject.GetComponent<Renderer>().material.color;
-                c.a = 0.5f;
-            gameObject.GetComponent<Renderer>().material.color = c;
+            invulTime = 3;
+            transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material=transparentMat;
+            StartCoroutine(Shake(0.15f, 0.1f));
         }
         if (other.gameObject.tag == "gem")
         {
@@ -81,9 +95,9 @@ public class Chicken : MonoBehaviour
         invulTime -= Time.deltaTime;
         if (invulTime < 0 && isInvulnerable)
         {
-        //    Color c = gameObject.GetComponent<Renderer>().material.color;
-            c.a = 1;
-          //  gameObject.GetComponent<Renderer>().material.color = c;
+            Debug.Log("end invul");
+
+            transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material = normalMat;
             isInvulnerable = false;
         }
         bool going_left = Input.GetKeyDown(KeyCode.LeftArrow);

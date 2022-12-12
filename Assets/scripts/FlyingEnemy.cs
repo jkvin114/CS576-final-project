@@ -21,6 +21,7 @@ public class FlyingEnemy : MonoBehaviour
         descendTime = Random.Range(0.6f, 0.85f);
         leavingDirection=new Vector3(3,3, Random.Range(-4, 4));
         //leavingDirection.Normalize();
+        gameObject.tag = "obstacle";
     }
     public void StartMoveTo(float timeSpan, Vector3 pos)
     {

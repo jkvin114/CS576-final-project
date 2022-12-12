@@ -613,8 +613,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu: {fileID: 900164157}
-  currentScoreText: {fileID: 1556362573}
-  currentScore: 0
 --- !u!1 &218176509
 GameObject:
   m_ObjectHideFlags: 0
@@ -1871,6 +1869,16 @@ MonoBehaviour:
   disappearText: {fileID: 1866087884}
   foodList: {fileID: 929503161}
   tracker: {fileID: 938181000}
+  currentScoreText: {fileID: 1556362573}
+  totalScoreText: {fileID: 1890599009}
+  Heart1: {fileID: 1868818016}
+  Heart2: {fileID: 870290999}
+  Heart3: {fileID: 1662677261}
+  Heart4: {fileID: 1094342602}
+  Heart5: {fileID: 109597247}
+  currentScore: 0
+  totalScore: 0
+  lifePoint: 0
 --- !u!4 &825942730
 Transform:
   m_ObjectHideFlags: 0
@@ -3168,7 +3176,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1273121115}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1273121117
 Camera:
   m_ObjectHideFlags: 0

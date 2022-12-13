@@ -115,18 +115,27 @@ public class Chunk
         }
         foreach (int[] coord in obsgen.preys)
         {
-           // Debug.Log("prey");
             Vector3 pos = getCoord(coord[0], coord[1]);
             
             Quaternion rot = Quaternion.Euler(0, 90, 0);
+            string type = "chicken";
 
-            GameObject prey = level.InstantiateObj(level.chickenPrey, pos, rot);
-
+            GameObject obj = level.chickenPrey;
+            if(Random.Range(0, 2) == 0)
+            {
+                type = "rabbit";
+                obj = level.rabbitPrey;
+            }
+            GameObject prey = level.InstantiateObj(obj, pos, rot);
             level.addPrey(prey);
-            level.Coroutine(movePrey(prey, (15f + coord[0] * 0.2f) / playerSpeed, coord[0], coord[1]));
-           // prey.GetComponent<ChickenPrey>().spawn(coord[0], coord[1]);
-            //GameObject prey = placeObject(level.chickenPrey, pos, rot);
-            //xlevel.Coroutine(moveFlyingEnemy(eagle, (8.5f + coord[0] * 0.4f) / playerSpeed, 6.0f / playerSpeed, goalPos));
+            if (type == "chicken")
+            {
+                prey.GetComponent<ChickenPrey>().init(level.maskChunk(obsgen.grid), pathEnds[Random.Range(0, pathEnds.Count - 1)], this.pos, coord[0], coord[1]);
+
+            }
+            else if (type == "rabbit")
+                prey.GetComponent<RabbitPrey>().init(level.maskChunk(obsgen.grid), pathEnds[Random.Range(0, pathEnds.Count - 1)], this.pos, coord[0], coord[1]);
+
         }
     }
     public IEnumerator moveEnemy(GameObject enemy,float delay, Vector3 pos, int d,float speed)
@@ -145,14 +154,6 @@ public class Chunk
     {
         yield return new WaitForSeconds(delay);
         enemy.GetComponent<FlyingEnemy>().StartMoveTo(timeSpan, pos);
-        yield return null;
-    }
-    public IEnumerator movePrey(GameObject prey, float delay, int x,int z)
-    {
-        prey.GetComponent<ChickenPrey>().init(level.maskChunk(obsgen.grid), pathEnds[Random.Range(0, pathEnds.Count - 1)], pos, x, z);
-        yield return new WaitForSeconds(delay);
-        if(!prey.IsDestroyed())
-            prey.GetComponent<ChickenPrey>().move();
         yield return null;
     }
     public void placeGem(int row, int lane,int type)
@@ -234,7 +235,7 @@ public class Chunk
 
         ground.AddComponent<BoxCollider>();
         ground.GetComponent<BoxCollider>().size = new Vector3(1.0f, 1.0f, 1.0f);
-        ground.transform.position = new Vector3(startPos, Random.Range(0.001f, 0.0f), 0);
+        ground.transform.position = new Vector3(startPos, pos%2==0?0:0.005f, 0);
         biome.addFence(startPos);
 
         List<int> lastPathEnds = new();

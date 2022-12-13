@@ -24,6 +24,8 @@ public class Level : MonoBehaviour
     public GameObject foxPlayer;
     public GameObject chickenPlayer;
     public GameObject chickenPrey;
+    public GameObject rabbitPrey;
+
 
     public GameObject fence1;
     public GameObject fence2;
@@ -65,7 +67,7 @@ public class Level : MonoBehaviour
     internal static float[] laneCoordinates= new float[5] { 1.745f, 1.335f, 0.925f, 0.515f, 0.105f };
     internal float[] laneBounds = new float[6];
     private int numTerrains=0;
-    internal int difficulty = 3;
+    public int difficulty = 3;
     public int difficultyIncreaseRate;
 
     public GameObject gem1;
@@ -236,7 +238,7 @@ public class Level : MonoBehaviour
             {
                 continue;
             }
-            g.GetComponent<ChickenPrey>().updateChunks(maskChunk, endLane[Random.Range(0, endLane.Count - 1)], numTerrains, currentPlayerSpeed);
+            g.GetComponent<Prey>().updateChunks(maskChunk, endLane[Random.Range(0, endLane.Count - 1)], endLane, currentPlayerSpeed);
         }
 
     }

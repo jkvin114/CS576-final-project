@@ -27,7 +27,6 @@ public class Fox : MonoBehaviour
     {
         animation_controller = GetComponent<Animator>();
         movement_direction = new Vector3(0.0f, 0.0f, 0.0f);
-        running_velocity = 1.4f;
         side_velocity = 0.5f;
         velocity = 0.1f;
         lane = 2;
@@ -65,7 +64,8 @@ public class Fox : MonoBehaviour
     {
         if (other.gameObject.CompareTag("obstacle")  && !isInvulnerable)
         {
-         //   Debug.Log("obstacle");
+            //   Debug.Log("obstacle");
+            //return;
             isInvulnerable = true;
             invulTime = 3;
             transform.GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material=transparentMat;
@@ -96,7 +96,8 @@ public class Fox : MonoBehaviour
         }
         if (other.gameObject.CompareTag("prey"))
         {
-            other.gameObject.GetComponent<ChickenPrey>().caught();
+            animation_controller.SetTrigger("Eat");
+            other.gameObject.GetComponent<Prey>().caught();
             UIController.GetComponent<Timer>().HitsSpecialGem();
         }
     }
@@ -111,8 +112,8 @@ public class Fox : MonoBehaviour
             transform.GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material = normalMat;
             isInvulnerable = false;
         }
-        bool going_left = Input.GetKeyDown(KeyCode.LeftArrow);
-        bool going_right = Input.GetKeyDown(KeyCode.RightArrow);
+        bool going_left = Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A);
+        bool going_right = Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D);
         float laneOffset = 0;
         if (directionChangeBlockingTime <0)
         {
@@ -130,7 +131,7 @@ public class Fox : MonoBehaviour
                 lane--;
                 directionChangeBlockingTime = directionChangeDelay;
                 currentDirection = Direction.LEFT;
-            //    animation_controller.SetTrigger("Left");
+                animation_controller.SetTrigger("Left");
             }
             inputBuffer = 0;
         } else if(((!going_left && going_right) || inputBuffer==2) && directionChangeBlockingTime < 0) {
@@ -139,7 +140,7 @@ public class Fox : MonoBehaviour
                 lane++;
                 directionChangeBlockingTime = directionChangeDelay;
                 currentDirection = Direction.RIGHT;
-           //     animation_controller.SetTrigger("Right");
+                animation_controller.SetTrigger("Right");
             }
             inputBuffer = 0;
         } else {

@@ -29,7 +29,6 @@ public class Chicken : MonoBehaviour
         animation_controller = GetComponent<Animator>();
         character_controller = GetComponent<CharacterController>();
         movement_direction = new Vector3(0.0f, 0.0f, 0.0f);
-        running_velocity = 1.4f;
         side_velocity = 0.5f;
         velocity = 0.1f;
         lane = 2;

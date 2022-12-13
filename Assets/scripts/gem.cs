@@ -12,7 +12,7 @@ public class gem : MonoBehaviour
     Vector3 animDirection;
     void Start()
     {
-        animDirection=new Vector3(1,0,2.5f);
+        animDirection=new Vector3(3,0,2.5f);
     }
 
     // Update is called once per frame

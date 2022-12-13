@@ -78,17 +78,8 @@ public abstract class ObstacleGenerator
                 switch (grid[i, j])
                 {
                     case GridInit.GEM:
+                        chunk.placeGem(i, j, 1);
                         
-
-                        if (Random.Range(0, 15) == 0)
-                        {
-                            grid[i, j] = GridInit.PREY;
-                            preys.Add(new int[] {i, j });
-                        }
-                        else
-                        {
-                            chunk.placeGem(i, j, 1);
-                        }
                         break;
                     case GridInit.GEM2:
                         chunk.placeGem(i, j, 2);
@@ -125,6 +116,9 @@ public abstract class ObstacleGenerator
                     case GridInit.ENEMY:
                         //chunk.placeObstacle(8, i, j);
                         if(isHard && Random.Range(0,4)==0) chunk.placeGem(i, j, 1);
+                        break;
+                    case GridInit.PREY:
+                        preys.Add(new int[] { i, j });
                         break;
                 }
             }
@@ -253,9 +247,9 @@ class RandomObstacleGenerator : ObstacleGenerator
             int enemyLane = Random.Range(0, LANES);
             if(Random.Range(0, 30) <= difficulty - 2 && grid[i, enemyLane] == GridInit.OBSTACLE)
             {
-                int type = Random.Range(0, 5);
+                int type = Random.Range(0, 10);
                 //bear
-                if (type == 0)
+                if (type<6)
                 {
                     for (int j = 0; j < LANES - 1; j++) {
                      //   if (j == enemyLane) grid[i, enemyLane] = GridInit.ENEMY;
@@ -263,7 +257,7 @@ class RandomObstacleGenerator : ObstacleGenerator
                     }
                     bears.Add(new int[] { i, enemyLane });
                 }//fox
-                else if (type == 1|| type == 2 && false)
+                else if (false)
                 {
                     for (int j = 0; j < LANES - 1; j++)
                     {
@@ -388,9 +382,16 @@ class RandomObstacleGenerator : ObstacleGenerator
         {
             if (direction==Direction.FORWARD &&  Random.Range(0, 9) > 0)
             {
-                if(pathNum>0 && grid[row, lane]!=GridInit.GEM)
+                if (pathNum > 0 && grid[row, lane] != GridInit.GEM)
                     grid[row, lane] = GridInit.GEM2;
-                else grid[row, lane] = GridInit.GEM;
+                else {
+                    grid[row, lane] = GridInit.GEM;
+
+                    if (Random.Range(0, 10) == 0)
+                    {
+                        grid[row, lane] = GridInit.PREY;
+                    }
+                }
             }
                 
             else grid[row, lane] = GridInit.EMPTY;

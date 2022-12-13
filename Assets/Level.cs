@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.PlayerSettings;
 
@@ -20,7 +21,10 @@ public class Level : MonoBehaviour
     public GameObject forest_terrain;
     public GameObject mountain_terrain;
     public GameObject rocky_mountain_terrain;
-    public GameObject player;
+    public GameObject foxPlayer;
+    public GameObject chickenPlayer;
+    public GameObject chickenPrey;
+
     public GameObject fence1;
     public GameObject fence2;
 
@@ -61,7 +65,7 @@ public class Level : MonoBehaviour
     internal static float[] laneCoordinates= new float[5] { 1.745f, 1.335f, 0.925f, 0.515f, 0.105f };
     internal float[] laneBounds = new float[6];
     private int numTerrains=0;
-    internal int difficulty = 27;
+    internal int difficulty = 3;
     public int difficultyIncreaseRate;
 
     public GameObject gem1;
@@ -77,13 +81,16 @@ public class Level : MonoBehaviour
 
     bool isGameStarted =false;
     float currentPlayerSpeed = 0;
+    public bool isChicken=false;
+
+    List<GameObject> activePreys = new();
     // Start is called before the first frame update
     void Start()
     {
         biomeSeed = Random.Range(0.0f, 20);
         decorationSeed = Random.Range(0.0f, 0);
         laneBounds[0] = leftBound;
-        Debug.Log(laneWidth);
+      //  Debug.Log(laneWidth);
         for (int i = 0; i < 5; i++)
         {   
           //  laneCoordinates[i] = leftBound - laneWidth * i - laneWidth/2;
@@ -95,9 +102,20 @@ public class Level : MonoBehaviour
         // player.AddComponent<CharacterController>();
 
         //  player.AddComponent<Chicken>();
-        player.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        player.transform.position = new Vector3(-1, bottomY, laneCoordinates[2]);
-        player.transform.rotation = Quaternion.Euler(0, 90, 0);
+        if (isChicken)
+        {
+
+            chickenPlayer.transform.position = new Vector3(-1, bottomY, laneCoordinates[2]);
+            chickenPlayer.transform.rotation = Quaternion.Euler(0, 90, 0);
+            foxPlayer.SetActive(false);
+        }
+        else
+        {
+
+            foxPlayer.transform.position = new Vector3(-1, bottomY, laneCoordinates[2]);
+            foxPlayer.transform.rotation = Quaternion.Euler(0, 90, 0);
+            chickenPlayer.SetActive(false);
+        }
         
         //Instantiate(player, , );
         // terrains =new GameObject[5]{plain_terrain ,rocky_terrain, forest_terrain ,mountain_terrain,rocky_mountain_terrain};
@@ -134,12 +152,22 @@ public class Level : MonoBehaviour
     }
     private void checkCreateChunk()
     {
+        GameObject player = isChicken ? chickenPlayer : foxPlayer;
         if(player.transform.position.x > chunks.Last.Value.pos*chunkLength - chunkLength * 2 && isGameStarted)
         {
             if (chunks.Last.Value.pos % difficultyIncreaseRate == difficultyIncreaseRate-1)
             {
                 difficulty++;
-                currentPlayerSpeed = player.GetComponent<Chicken>().increaseSpeed();
+                if(isChicken)
+                {
+                    currentPlayerSpeed = chickenPlayer.GetComponent<Chicken>().increaseSpeed();
+
+                }
+                else
+                {
+                    currentPlayerSpeed = foxPlayer.GetComponent<Fox>().increaseSpeed();
+
+                }
             }
 
             createChunk(false);
@@ -150,6 +178,10 @@ public class Level : MonoBehaviour
             }
             
         }
+    }
+    public void addPrey(GameObject p)
+    {
+        activePreys.Add(p);
     }
 
     public void createChunk(bool isEmpty)
@@ -162,6 +194,8 @@ public class Level : MonoBehaviour
         Chunk chunk = new(numTerrains,this,lastChunk, isEmpty);
         chunk.generate(Random.Range(0,5)==0);
         chunk.spawnEnemy(currentPlayerSpeed);
+        List<GridInit[]> chunkMask = maskChunk(chunk.obsgen.grid);
+        updatePreys(chunkMask,chunk.pathEnds);
         numTerrains++;
         chunks.AddLast(chunk);
     }
@@ -170,8 +204,42 @@ public class Level : MonoBehaviour
         chunks.First.Value.OnDestroy();
         chunks.RemoveFirst();
     }
-   
+    public List<GridInit[]> maskChunk(GridInit[,] grid)
+    {
+        List<GridInit[]> mask=new();
+        for (int i = 0; i < 12; i++)
+        {
+            GridInit[] row = new GridInit[5];
+            for (int j = 0; j < 5; j++)
+            {
+                if(grid[i, j]==GridInit.OBSTACLE ||
+                    grid[i, j] == GridInit.LONG_OBSTACLE_SPACE ||
+                    grid[i, j] == GridInit.FIXED_OBSTACLE ||
+                    grid[i, j] == GridInit.OBSTACLES_2LONG ||
+                    grid[i, j] == GridInit.OBSTACLES_2WIDE ||
+                    grid[i, j] == GridInit.OBSTACLES_3WIDE ||
+                    grid[i, j] == GridInit.OBSTACLES_3LONG ||
+                    grid[i, j] == GridInit.ENEMY
+                    )
+                    row[j] = GridInit.OBSTACLE;
+                else row[j] = GridInit.EMPTY;
+            }
+            mask.Add(row);
+        }
+        return mask;
+    }
+    void updatePreys(List<GridInit[]> maskChunk, List<int> endLane)
+    {
+        foreach (GameObject g in activePreys)
+        {
+            if (g.IsDestroyed())
+            {
+                continue;
+            }
+            g.GetComponent<ChickenPrey>().updateChunks(maskChunk, endLane[Random.Range(0, endLane.Count - 1)], numTerrains, currentPlayerSpeed);
+        }
 
+    }
     // Update is called once per frame
     void Update()
     {

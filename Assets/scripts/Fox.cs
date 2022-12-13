@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Chicken : MonoBehaviour
+public class Fox : MonoBehaviour
 {
     public Vector3 movement_direction;
     public float running_velocity;
@@ -12,7 +12,6 @@ public class Chicken : MonoBehaviour
     public Material normalMat;
     public Material transparentMat;
     private Animator animation_controller;
-    private CharacterController character_controller;
     public GameObject UIController;
     public GameObject MainCamera;
     private float velocity;
@@ -27,14 +26,13 @@ public class Chicken : MonoBehaviour
     void Start()
     {
         animation_controller = GetComponent<Animator>();
-        character_controller = GetComponent<CharacterController>();
         movement_direction = new Vector3(0.0f, 0.0f, 0.0f);
         running_velocity = 1.4f;
         side_velocity = 0.5f;
         velocity = 0.1f;
         lane = 2;
-        animation_controller.SetBool("Walk", true);
-        animation_controller.speed = running_velocity;
+        animation_controller.SetTrigger("Run");
+        animation_controller.speed = running_velocity*1.3f;
 
     }
     public float increaseSpeed()
@@ -43,8 +41,6 @@ public class Chicken : MonoBehaviour
             running_velocity += 0.2f;
         animation_controller.speed = running_velocity;
         if (running_velocity > 3.0f) {
-            animation_controller.SetBool("Run", true);
-            animation_controller.SetBool("Walk", false);
         } 
         return running_velocity;    
     }
@@ -69,10 +65,10 @@ public class Chicken : MonoBehaviour
     {
         if (other.gameObject.CompareTag("obstacle")  && !isInvulnerable)
         {
-            Debug.Log("obstacle");
+         //   Debug.Log("obstacle");
             isInvulnerable = true;
             invulTime = 3;
-            transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material=transparentMat;
+            transform.GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material=transparentMat;
             StartCoroutine(Shake(0.15f, 0.1f));
             UIController.GetComponent<Timer>().HitsObstacle();
             MainCamera.GetComponent<Follow_player>().Shake();
@@ -98,18 +94,21 @@ public class Chicken : MonoBehaviour
             other.gameObject.GetComponent<food>().Obtain();
             UIController.GetComponent<Timer>().HitsWrongFood();
         }
-        
+        if (other.gameObject.CompareTag("prey"))
+        {
+            other.gameObject.GetComponent<ChickenPrey>().caught();
+            UIController.GetComponent<Timer>().HitsSpecialGem();
+        }
     }
     void Update()
     {
         MainCamera.GetComponent<Follow_player>().Follow(transform);
-
         invulTime -= Time.deltaTime;
         if (invulTime < 0 && isInvulnerable)
         {
-            Debug.Log("end invul");
+          //  Debug.Log("end invul");
 
-            transform.GetChild(4).gameObject.GetComponent<SkinnedMeshRenderer>().material = normalMat;
+            transform.GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material = normalMat;
             isInvulnerable = false;
         }
         bool going_left = Input.GetKeyDown(KeyCode.LeftArrow);
@@ -126,12 +125,12 @@ public class Chicken : MonoBehaviour
         }
 
         if (((going_left && !going_right)|| inputBuffer==1 )&& directionChangeBlockingTime < 0) {
-            Debug.Log("left");
             //  velocity = -1.0f;
-            if (lane > 0) { 
+            if (lane > 0) {
                 lane--;
                 directionChangeBlockingTime = directionChangeDelay;
                 currentDirection = Direction.LEFT;
+            //    animation_controller.SetTrigger("Left");
             }
             inputBuffer = 0;
         } else if(((!going_left && going_right) || inputBuffer==2) && directionChangeBlockingTime < 0) {
@@ -140,6 +139,7 @@ public class Chicken : MonoBehaviour
                 lane++;
                 directionChangeBlockingTime = directionChangeDelay;
                 currentDirection = Direction.RIGHT;
+           //     animation_controller.SetTrigger("Right");
             }
             inputBuffer = 0;
         } else {

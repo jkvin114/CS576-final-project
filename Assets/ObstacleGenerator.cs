@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 
 enum Direction
@@ -22,7 +23,7 @@ public abstract class ObstacleGenerator
     internal List<int[]> bears= new();
     internal List<int[]> eagles = new();
     internal List<int[]> foxes = new();
-
+    internal List<int[]> preys = new();
     public abstract void Generate(bool hasFood);
     protected ObstacleGenerator(int pos,int difficulty,List<int> prevEnds)
     {
@@ -77,7 +78,17 @@ public abstract class ObstacleGenerator
                 switch (grid[i, j])
                 {
                     case GridInit.GEM:
-                        chunk.placeGem(i, j, 1);
+                        
+
+                        if (Random.Range(0, 15) == 0)
+                        {
+                            grid[i, j] = GridInit.PREY;
+                            preys.Add(new int[] {i, j });
+                        }
+                        else
+                        {
+                            chunk.placeGem(i, j, 1);
+                        }
                         break;
                     case GridInit.GEM2:
                         chunk.placeGem(i, j, 2);
@@ -252,7 +263,7 @@ class RandomObstacleGenerator : ObstacleGenerator
                     }
                     bears.Add(new int[] { i, enemyLane });
                 }//fox
-                else if (type == 1|| type == 2)
+                else if (type == 1|| type == 2 && false)
                 {
                     for (int j = 0; j < LANES - 1; j++)
                     {
@@ -270,7 +281,6 @@ class RandomObstacleGenerator : ObstacleGenerator
             }
 
         }
-
 
             //convert some obstacle into long obstacles
         for (int i = 0; i < ROWS - 1; i++)
@@ -390,7 +400,10 @@ class RandomObstacleGenerator : ObstacleGenerator
 
             // if(!isHard)
             if (!(difficulty > 7 && isHard && Random.Range(6, 20) < difficulty))
-                grid[row+1, lane] = GridInit.EMPTY;
+            {
+                grid[row + 1, lane] = GridInit.EMPTY;
+            }
+                
 
             if(direction==Direction.LEFT || direction == Direction.RIGHT)
                direction= Direction.FORWARD;

@@ -62,7 +62,7 @@ public class Timer : MonoBehaviour
         Debug.Log("test end");
         Debug.Log("test start");
         for(int j = 0; j < 5; j++) {
-            Debug.Log(foodIntList[j]);
+           //Debug.Log(foodIntList[j]);
         }
         Debug.Log("test end");
     }
@@ -177,7 +177,7 @@ public class Timer : MonoBehaviour
     public void TimeOver() {
         currentScore -= 100;
         lifePoint -= 1;
-        Debug.Log("Lost 1 health!!!!!!");
+       // Debug.Log("Lost 1 health!!!!!!");
         currTime = startTime;
         currTimeMemory = startTimeMemory;
         foodList.SetActive(true);

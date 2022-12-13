@@ -25,7 +25,8 @@ public enum GridInit
     KEY_FOOD=12,
     OTHER_FOOD=13,
     ENEMY=14,
-    ENEMY_PATH=15
+    ENEMY_PATH=15,
+    PREY=16
 }
 public class Chunk
 {
@@ -40,7 +41,7 @@ public class Chunk
     private Chunk lastChunk;
     internal List<int> pathEnds;
     bool isEmpty=false;
-    ObstacleGenerator obsgen;
+    internal ObstacleGenerator obsgen;
     internal int food = -1;
     public Chunk(int pos, Level level, Chunk lastChunk, bool isEmpty)
     {
@@ -80,7 +81,7 @@ public class Chunk
             {
                 Vector3 pos = getCoord(coord[0], coord[1]);
                 GameObject b = placeObject(level.bear, new Vector3(pos.x, pos.y, Level.laneCoordinates[4] - Level.laneWidth * 0.5f), Quaternion.Euler(0, 0, 0));
-                level.Coroutine(moveEnemy(b, (14f + coord[0] * 0.2f )/ playerSpeed , pos, (int)Direction.LEFT, playerSpeed));
+                level.Coroutine(moveEnemy(b, (13f + coord[0] * 0.2f )/ playerSpeed , pos, (int)Direction.LEFT, playerSpeed));
             }
         }
         foreach (int[] coord in obsgen.foxes)
@@ -112,6 +113,21 @@ public class Chunk
             GameObject eagle = placeObject(level.eagle, pos, rot);
             level.Coroutine(moveFlyingEnemy(eagle, (8.5f + coord[0] * 0.4f) / playerSpeed, 6.0f/playerSpeed, goalPos));
         }
+        foreach (int[] coord in obsgen.preys)
+        {
+           // Debug.Log("prey");
+            Vector3 pos = getCoord(coord[0], coord[1]);
+            
+            Quaternion rot = Quaternion.Euler(0, 90, 0);
+
+            GameObject prey = level.InstantiateObj(level.chickenPrey, pos, rot);
+
+            level.addPrey(prey);
+            level.Coroutine(movePrey(prey, (15f + coord[0] * 0.2f) / playerSpeed, coord[0], coord[1]));
+           // prey.GetComponent<ChickenPrey>().spawn(coord[0], coord[1]);
+            //GameObject prey = placeObject(level.chickenPrey, pos, rot);
+            //xlevel.Coroutine(moveFlyingEnemy(eagle, (8.5f + coord[0] * 0.4f) / playerSpeed, 6.0f / playerSpeed, goalPos));
+        }
     }
     public IEnumerator moveEnemy(GameObject enemy,float delay, Vector3 pos, int d,float speed)
     {
@@ -129,6 +145,14 @@ public class Chunk
     {
         yield return new WaitForSeconds(delay);
         enemy.GetComponent<FlyingEnemy>().StartMoveTo(timeSpan, pos);
+        yield return null;
+    }
+    public IEnumerator movePrey(GameObject prey, float delay, int x,int z)
+    {
+        prey.GetComponent<ChickenPrey>().init(level.maskChunk(obsgen.grid), pathEnds[Random.Range(0, pathEnds.Count - 1)], pos, x, z);
+        yield return new WaitForSeconds(delay);
+        if(!prey.IsDestroyed())
+            prey.GetComponent<ChickenPrey>().move();
         yield return null;
     }
     public void placeGem(int row, int lane,int type)

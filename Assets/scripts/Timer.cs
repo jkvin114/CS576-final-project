@@ -88,7 +88,7 @@ public class Timer : MonoBehaviour
         CList.Add(C5);
 
         Time.timeScale = 0;
-        startTime = 20f;
+        startTime = 10f;
         startTimeMemory = 5f;
         currTime = startTime;
         currTimeMemory = startTimeMemory;
@@ -218,6 +218,7 @@ public class Timer : MonoBehaviour
         C4.SetActive(false);
         C5.SetActive(false);
 
+        DestroyFoodList();
         GenerateFoodList();
     }
 
@@ -245,6 +246,7 @@ public class Timer : MonoBehaviour
         C4.SetActive(false);
         C5.SetActive(false);
 
+        DestroyFoodList();
         GenerateFoodList();
     }
 
@@ -269,7 +271,9 @@ public class Timer : MonoBehaviour
     }
 
     public void DestroyFoodList() {
-        
+        for(int i = 0; i < 5; i++) {
+            Destroy(foodPrefabList[i].GetChild(0).gameObject);
+        }
     }
 
     public void SpawnFood(int pos, int numFood) {

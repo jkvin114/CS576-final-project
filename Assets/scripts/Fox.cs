@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using static UnityEditor.PlayerSettings;
+using static UnityEngine.ParticleSystem;
 public class Fox : MonoBehaviour
 {
     public Vector3 movement_direction;
@@ -22,6 +23,9 @@ public class Fox : MonoBehaviour
     Direction currentDirection = Direction.FORWARD;
     private bool isInvulnerable=false;
     private float invulTime = 0;
+    public GameObject food_particle;
+    public GameObject gem_particle;
+    public GameObject white_particle;
     int inputBuffer = 0;
     void Start()
     {
@@ -77,17 +81,35 @@ public class Fox : MonoBehaviour
         {
             other.gameObject.GetComponent<gem>().Obtain();
             UIController.GetComponent<Timer>().HitsNormalGem();
+            Vector3 pos = transform.position;
+            pos.x = transform.position.x + 0.4f;
+            GameObject particle = Instantiate(gem_particle, pos, Quaternion.identity);
+
+            particle.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            particle.GetComponent<ParticleSystem>().Play();
         }
         if (other.gameObject.CompareTag("gem_special"))
         {
+            Vector3 pos = transform.position;
+            pos.x = transform.position.x + 0.2f;
+            GameObject particle = Instantiate(gem_particle, pos, Quaternion.identity);
+
             other.gameObject.GetComponent<gem>().Obtain();
             UIController.GetComponent<Timer>().HitsSpecialGem();
+            particle.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+            particle.GetComponent<ParticleSystem>().Play();
         }
         if (other.gameObject.CompareTag("key_food"))
         {
 
             other.gameObject.GetComponent<food>().Obtain();
-            UIController.GetComponent<Timer>().HitsCorrectFood();
+            UIController.GetComponent<Timer>().HitsCorrectFood(); 
+            Vector3 pos = transform.position;
+            pos.x = transform.position.x + 0.2f;
+            GameObject particle = Instantiate(food_particle, pos, Quaternion.identity);
+
+            particle.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            particle.GetComponent<ParticleSystem>().Play();
         }
         if (other.gameObject.CompareTag("wrong_food"))
         {
@@ -99,6 +121,11 @@ public class Fox : MonoBehaviour
             animation_controller.SetTrigger("Eat");
             other.gameObject.GetComponent<Prey>().caught();
             UIController.GetComponent<Timer>().HitsSpecialGem();
+            Vector3 pos = transform.position;
+            pos.x = transform.position.x + 0.2f;
+            GameObject particle = Instantiate(white_particle, pos, Quaternion.identity);
+
+            particle.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         }
     }
     void Update()

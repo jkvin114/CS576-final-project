@@ -86,6 +86,9 @@ public class Level : MonoBehaviour
     public bool isChicken=false;
 
     List<GameObject> activePreys = new();
+    List<int> keyFoods= new();
+    internal int nextFood = 0;
+    public Timer timer;
     // Start is called before the first frame update
     void Start()
     {
@@ -134,7 +137,7 @@ public class Level : MonoBehaviour
 
     public IEnumerator initlalGeneration()
     {
-        int count = 1;
+        int count = 3;
         for(int i=0;i<count; i++) {
             createChunk(true);
             yield return new WaitForSeconds(0.3f);
@@ -181,6 +184,44 @@ public class Level : MonoBehaviour
             
         }
     }
+    public GameObject nextKeyFood()
+    {
+        if(nextFood < keyFoods.Count)
+        {
+            return timer.foodPrefabs[keyFoods[nextFood]-1];
+        }
+        return null;
+    }
+    public GameObject nextWrongFood()
+    {
+        if (nextFood < keyFoods.Count)
+        {
+            return food1;
+        }
+        return null;
+    }
+    public void onGetRightFood()
+    {
+        nextFood++;
+            Debug.Log(nextFood);
+        if (nextFood >= keyFoods.Count)
+        {
+            StartCoroutine(spawnFood());
+            nextFood = 0;
+            keyFoods.Clear();
+        }
+    }
+    IEnumerator spawnFood()
+    {
+        yield return new WaitForSeconds(2);
+        StartCoroutine(initlalGeneration());
+        timer.spawnFoods();
+        yield return null;
+    }
+    public void onSpawnFood(List<int> keyFoods)
+    {
+        this.keyFoods= keyFoods;
+    }
     public void addPrey(GameObject p)
     {
         activePreys.Add(p);
@@ -194,7 +235,7 @@ public class Level : MonoBehaviour
             lastChunk = chunks.Last.Value;
         }
         Chunk chunk = new(numTerrains,this,lastChunk, isEmpty);
-        chunk.generate(Random.Range(0,5)==0);
+        chunk.generate(Random.Range(0,3)==0);
         chunk.spawnEnemy(currentPlayerSpeed);
         List<GridInit[]> chunkMask = maskChunk(chunk.obsgen.grid);
         updatePreys(chunkMask,chunk.pathEnds);

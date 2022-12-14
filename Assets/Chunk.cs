@@ -172,8 +172,10 @@ public class Chunk
     public void placeFood(int row, int lane, bool isKey)
     {
         if (isEmpty) return;
-        GameObject food = level.food2;
-        if (isKey) food = level.food1;
+        GameObject food = level.nextWrongFood();
+        if (isKey) food = level.nextKeyFood();
+
+        if (food == null) return;
         food = placeObject(food, getItemCoord(row, lane), Quaternion.identity);
         food.AddComponent<food>();
         food.AddComponent<BoxCollider>();

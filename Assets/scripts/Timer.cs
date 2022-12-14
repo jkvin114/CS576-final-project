@@ -20,6 +20,23 @@ public class Timer : MonoBehaviour
     public Text disappearText;
     public GameObject foodList;
     public GameObject tracker;
+    public Transform food01;
+    public Transform food02;
+    public Transform food03;
+    public Transform food04;
+    public Transform food05;
+    public List<Transform> foodPrefabList = new List<Transform>();
+
+    public GameObject Apple;
+    public GameObject Banana;
+    public GameObject Candy;
+    public GameObject Garlic;
+    public GameObject Hamburger;
+    public GameObject Mushroom;
+    public GameObject Lemon;
+    public GameObject Pumpkin;
+    public GameObject Waffle;
+    public GameObject Watermelon;
 
     public TMP_Text currentScoreText;
     public TMP_Text totalScoreText;
@@ -37,6 +54,12 @@ public class Timer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        foodPrefabList.Add(food01);
+        foodPrefabList.Add(food02);
+        foodPrefabList.Add(food03);
+        foodPrefabList.Add(food04);
+        foodPrefabList.Add(food05);
+
         Time.timeScale = 0;
         startTime = 5f;
         startTimeMemory = 3f;
@@ -50,21 +73,20 @@ public class Timer : MonoBehaviour
         int newNumber;
         int i = 0;
 
-        Debug.Log("test start");
+        // Debug.Log("finding numbers");
         while(i < 5) {
-            newNumber = Random.Range(0,9);
-            Debug.Log(newNumber);
+            newNumber = Random.Range(1,11);
+            // Debug.Log(newNumber);
             if(!foodIntList.Contains(newNumber)) {
                 foodIntList[i] = newNumber;
                 i++;
             }
         }
-        Debug.Log("test end");
-        Debug.Log("test start");
+        // Debug.Log("printing food list");
         for(int j = 0; j < 5; j++) {
-           //Debug.Log(foodIntList[j]);
+            SpawnFood(j, foodIntList[j]);
+            // Debug.Log(foodIntList[j]);
         }
-        Debug.Log("test end");
     }
 
     // Update is called once per frame
@@ -190,5 +212,58 @@ public class Timer : MonoBehaviour
 
     public void HitsObstacle() {
         lifePoint -= 1;
+    }
+
+    public void SpawnFood(int pos, int numFood) {
+        if(numFood == 1) {
+            GameObject newFood = Instantiate(Apple, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 2) {
+            GameObject newFood = Instantiate(Banana, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 3) {
+            GameObject newFood = Instantiate(Candy, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 4) {
+            GameObject newFood = Instantiate(Garlic, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 5) {
+            GameObject newFood = Instantiate(Hamburger, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 6) {
+            GameObject newFood = Instantiate(Mushroom, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 7) {
+            GameObject newFood = Instantiate(Lemon, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 8) {
+            GameObject newFood = Instantiate(Pumpkin, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 9) {
+            GameObject newFood = Instantiate(Waffle, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
+        else if(numFood == 10) {
+            GameObject newFood = Instantiate(Watermelon, foodPrefabList[pos]) as GameObject;
+            newFood.transform.localScale = new Vector3(250, 250, 1);
+            newFood.gameObject.layer = 5;
+        }
     }
 }

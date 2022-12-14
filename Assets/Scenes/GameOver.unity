@@ -432,7 +432,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 979289266}
-        m_TargetAssemblyTypeName: Start, Assembly-CSharp
+        m_TargetAssemblyTypeName: GameStart, Assembly-CSharp
         m_MethodName: LoadGame
         m_Mode: 1
         m_Arguments:
@@ -883,9 +883,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 979289261}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f54d76ae6e55cf428b2560ad7836eec, type: 3}
+  m_Script: {fileID: 11500000, guid: 91f88556806727d4f93ba99feec38a84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreText: {fileID: 1566158341}
 --- !u!1 &1397212243
 GameObject:
   m_ObjectHideFlags: 0

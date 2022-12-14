@@ -89,6 +89,7 @@ public class Level : MonoBehaviour
     List<int> keyFoods= new();
     internal int nextFood = 0;
     public Timer timer;
+    bool canGenerateFood = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -214,9 +215,12 @@ public class Level : MonoBehaviour
     }
     IEnumerator spawnFood()
     {
-        yield return new WaitForSeconds(2f);
+        canGenerateFood= false;
+        yield return new WaitForSeconds(15/foxPlayer.GetComponent<Fox>().running_velocity);
         StartCoroutine(initlalGeneration());
         timer.GenerateFoodList();
+        canGenerateFood = false;
+
         yield return null;
     }
     public void onSpawnFood(List<int> keyFoods)
@@ -240,7 +244,7 @@ public class Level : MonoBehaviour
             lastChunk = chunks.Last.Value;
         }
         Chunk chunk = new(numTerrains,this,lastChunk, isEmpty);
-        chunk.generate(true);//numTerrains%Random.Range(3,5)==2
+        chunk.generate(canGenerateFood&& numTerrains%5==3);//numTerrains%Random.Range(3,5)==2
         chunk.spawnEnemy(currentPlayerSpeed);
         List<GridInit[]> chunkMask = maskChunk(chunk.obsgen.grid);
         updatePreys(chunkMask,chunk.pathEnds);

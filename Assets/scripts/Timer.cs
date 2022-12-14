@@ -50,6 +50,21 @@ public class Timer : MonoBehaviour
     public int lifePoint;
     public List<int> foodIntList = new List<int>(new int[5]);
 
+    public int currPos;
+    public GameObject Q1;
+    public GameObject Q2;
+    public GameObject Q3;
+    public GameObject Q4;
+    public GameObject Q5;
+    public GameObject C1;
+    public GameObject C2;
+    public GameObject C3;
+    public GameObject C4;
+    public GameObject C5;
+
+    public List<GameObject> QList = new List<GameObject>();
+    public List<GameObject> CList = new List<GameObject>();
+
 
     // Start is called before the first frame update
     void Start()
@@ -60,9 +75,21 @@ public class Timer : MonoBehaviour
         foodPrefabList.Add(food04);
         foodPrefabList.Add(food05);
 
+        currPos = 0;
+        QList.Add(Q1);
+        QList.Add(Q2);
+        QList.Add(Q3);
+        QList.Add(Q4);
+        QList.Add(Q5);
+        CList.Add(C1);
+        CList.Add(C2);
+        CList.Add(C3);
+        CList.Add(C4);
+        CList.Add(C5);
+
         Time.timeScale = 0;
-        startTime = 5f;
-        startTimeMemory = 3f;
+        startTime = 20f;
+        startTimeMemory = 5f;
         currTime = startTime;
         currTimeMemory = startTimeMemory;
 
@@ -70,23 +97,7 @@ public class Timer : MonoBehaviour
         totalScore = 0;
         lifePoint = 5;
 
-        int newNumber;
-        int i = 0;
-
-        // Debug.Log("finding numbers");
-        while(i < 5) {
-            newNumber = Random.Range(1,11);
-            // Debug.Log(newNumber);
-            if(!foodIntList.Contains(newNumber)) {
-                foodIntList[i] = newNumber;
-                i++;
-            }
-        }
-        // Debug.Log("printing food list");
-        for(int j = 0; j < 5; j++) {
-            SpawnFood(j, foodIntList[j]);
-            // Debug.Log(foodIntList[j]);
-        }
+        GenerateFoodList();
     }
 
     // Update is called once per frame
@@ -97,16 +108,11 @@ public class Timer : MonoBehaviour
         counterText.text = currTime.ToString("0");
         counterTextMemory.text = currTimeMemory.ToString("0");
 
-        if (currTime <= 0)
+        if (currTime > 0)
         {
-
             currentScoreText.text = currentScore.ToString();
             totalScoreText.text = totalScore.ToString();
-
-            if (currTime <= 0)
-            {
-               // TimeOver();
-            }
+            
             if (currTimeMemory <= 0)
             {
                 foodList.SetActive(false);
@@ -169,6 +175,9 @@ public class Timer : MonoBehaviour
                 SceneManager.LoadScene("GameOver");
             }
         }
+        else if (currTime <= 0) {
+            TimeOver();
+        }
     }
 
     public void HitsNormalGem() {
@@ -181,6 +190,9 @@ public class Timer : MonoBehaviour
 
     public void HitsCorrectFood() {
         currentScore += 50;
+        QList[currPos].SetActive(false);
+        CList[currPos].SetActive(true);
+        currPos += 1;
     }
     
     public void HitsWrongFood() {
@@ -194,6 +206,19 @@ public class Timer : MonoBehaviour
         }
         totalScore += currentScore;
         currentScore = 0;
+        currPos = 0;
+        Q1.SetActive(true);
+        Q2.SetActive(true);
+        Q3.SetActive(true);
+        Q4.SetActive(true);
+        Q5.SetActive(true);
+        C1.SetActive(false);
+        C2.SetActive(false);
+        C3.SetActive(false);
+        C4.SetActive(false);
+        C5.SetActive(false);
+
+        GenerateFoodList();
     }
 
     public void TimeOver() {
@@ -208,10 +233,43 @@ public class Timer : MonoBehaviour
         disappearText.enabled = true;
         totalScore += currentScore;
         currentScore = 0;
+        currPos = 0;
+        Q1.SetActive(true);
+        Q2.SetActive(true);
+        Q3.SetActive(true);
+        Q4.SetActive(true);
+        Q5.SetActive(true);
+        C1.SetActive(false);
+        C2.SetActive(false);
+        C3.SetActive(false);
+        C4.SetActive(false);
+        C5.SetActive(false);
+
+        GenerateFoodList();
     }
 
     public void HitsObstacle() {
         lifePoint -= 1;
+    }
+
+    public void GenerateFoodList() {
+        int newNumber;
+        int i = 0;
+
+        while(i < 5) {
+            newNumber = Random.Range(1,11);
+            if(!foodIntList.Contains(newNumber)) {
+                foodIntList[i] = newNumber;
+                i++;
+            }
+        }
+        for(int j = 0; j < 5; j++) {
+            SpawnFood(j, foodIntList[j]);
+        }
+    }
+
+    public void DestroyFoodList() {
+        
     }
 
     public void SpawnFood(int pos, int numFood) {

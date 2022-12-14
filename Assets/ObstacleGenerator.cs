@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 
 enum Direction
@@ -21,6 +22,8 @@ public abstract class ObstacleGenerator
 
     internal List<int[]> bears= new();
     internal List<int[]> eagles = new();
+    internal List<int[]> foxes = new();
+    internal List<int[]> preys = new();
     public abstract void Generate(bool hasFood);
     protected ObstacleGenerator(int pos,int difficulty,List<int> prevEnds)
     {
@@ -39,10 +42,10 @@ public abstract class ObstacleGenerator
     }
     public static ObstacleGenerator create(int pos,  int difficulty, List<int> prevEnds)
     {
-     //   if (pos % 10 > 8)
-      //  {
-      //      return new FixedObstacleGenerator(pos,difficulty, prevEnds);
-      //  }
+        if (pos % 20 ==55)
+        {
+            return new FixedObstacleGenerator(pos,difficulty, prevEnds);
+        }
         return new RandomObstacleGenerator(pos,  difficulty, prevEnds);
     }
     protected bool randBool()
@@ -76,6 +79,7 @@ public abstract class ObstacleGenerator
                 {
                     case GridInit.GEM:
                         chunk.placeGem(i, j, 1);
+                        
                         break;
                     case GridInit.GEM2:
                         chunk.placeGem(i, j, 2);
@@ -112,6 +116,9 @@ public abstract class ObstacleGenerator
                     case GridInit.ENEMY:
                         //chunk.placeObstacle(8, i, j);
                         if(isHard && Random.Range(0,4)==0) chunk.placeGem(i, j, 1);
+                        break;
+                    case GridInit.PREY:
+                        preys.Add(new int[] { i, j });
                         break;
                 }
             }
@@ -240,14 +247,24 @@ class RandomObstacleGenerator : ObstacleGenerator
             int enemyLane = Random.Range(0, LANES);
             if(Random.Range(0, 30) <= difficulty - 2 && grid[i, enemyLane] == GridInit.OBSTACLE)
             {
+                int type = Random.Range(0, 10);
                 //bear
-                if (Random.Range(0,3)<2)
+                if (type<6)
                 {
                     for (int j = 0; j < LANES - 1; j++) {
                      //   if (j == enemyLane) grid[i, enemyLane] = GridInit.ENEMY;
                         if(grid[i, j]==GridInit.OBSTACLE) grid[i,j]= GridInit.ENEMY_PATH;
                     }
                     bears.Add(new int[] { i, enemyLane });
+                }//fox
+                else if (false)
+                {
+                    for (int j = 0; j < LANES - 1; j++)
+                    {
+                        //   if (j == enemyLane) grid[i, enemyLane] = GridInit.ENEMY;
+                        if (grid[i, j] == GridInit.OBSTACLE) grid[i, j] = GridInit.ENEMY_PATH;
+                    }
+                    foxes.Add(new int[] { i, enemyLane });
                 }
                 else//eagle
                 {
@@ -258,7 +275,6 @@ class RandomObstacleGenerator : ObstacleGenerator
             }
 
         }
-
 
             //convert some obstacle into long obstacles
         for (int i = 0; i < ROWS - 1; i++)
@@ -366,9 +382,16 @@ class RandomObstacleGenerator : ObstacleGenerator
         {
             if (direction==Direction.FORWARD &&  Random.Range(0, 9) > 0)
             {
-                if(pathNum>0 && grid[row, lane]!=GridInit.GEM)
+                if (pathNum > 0 && grid[row, lane] != GridInit.GEM)
                     grid[row, lane] = GridInit.GEM2;
-                else grid[row, lane] = GridInit.GEM;
+                else {
+                    grid[row, lane] = GridInit.GEM;
+
+                    if (Random.Range(0, 10) == 0)
+                    {
+                        grid[row, lane] = GridInit.PREY;
+                    }
+                }
             }
                 
             else grid[row, lane] = GridInit.EMPTY;
@@ -376,7 +399,12 @@ class RandomObstacleGenerator : ObstacleGenerator
 
             pathList[pathNum].Add(new int[] { row, lane });
 
-            if(!isHard) grid[row+1, lane] = GridInit.EMPTY;
+            // if(!isHard)
+            if (!(difficulty > 7 && isHard && Random.Range(6, 20) < difficulty))
+            {
+                grid[row + 1, lane] = GridInit.EMPTY;
+            }
+                
 
             if(direction==Direction.LEFT || direction == Direction.RIGHT)
                direction= Direction.FORWARD;
@@ -434,6 +462,22 @@ class FixedObstacleGenerator : ObstacleGenerator
     }
     public override void Generate(bool hasFood)
     {
+        for (int i = 1; i < 11; i++)
+        {
+            bool type=Random.Range(0, 2)==0;
+            grid[i, 2] = GridInit.GEM;
+            grid[i, 0] = GridInit.ENEMY;
+            grid[i, 4] = GridInit.ENEMY;
+            grid[i, 1] = GridInit.ENEMY;
+            grid[i, 3] = GridInit.ENEMY;
+            foxes.Add(new int[] { i, type?0:1 });
+            foxes.Add(new int[] { i, type ? 4 : 3 });
+            eagles.Add(new int[] { i, type ? 1 : 0 });
+            eagles.Add(new int[] { i, type ? 3 : 4 });
+        }
+    }
+    void gen()
+    {
         for (int i = 0; i < 12; i++)
         {
 
@@ -442,9 +486,9 @@ class FixedObstacleGenerator : ObstacleGenerator
                 if (j == 0)
                 {
                     grid[i, 0] = GridInit.OBSTACLES_2WIDE;
-                    
+
                     grid[i, 1] = GridInit.LONG_OBSTACLE_SPACE;
-                    
+
                 }
                 else if (j == 1)
                 {

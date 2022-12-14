@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1520899659526320511}
   - component: {fileID: 1520899659526320504}
   - component: {fileID: 1520899659526320505}
-  - component: {fileID: 1520899659526320506}
+  - component: {fileID: 8401190878305604981}
   m_Layer: 0
   m_Name: WoodFence1(Clone)
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1520899659526320506
+--- !u!65 &8401190878305604981
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,5 +95,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.1999998, y: 1, z: 0.19999999}
-  m_Center: {x: -0.000000059604645, y: 0.5, z: 0}
+  m_Size: {x: 2.2, y: 1, z: 0.20000002}
+  m_Center: {x: -0.00000005960465, y: 0.5, z: 0}

@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 3713744674533942008}
   - component: {fileID: 7365905068913820774}
   - component: {fileID: 5583780770745449042}
+  - component: {fileID: -8093833801196323996}
   m_Layer: 0
   m_Name: Eagle_Normal
   m_TagString: Untagged
@@ -403,6 +404,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitFX: {fileID: 0}
+--- !u!65 &-8093833801196323996
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3665278347198440714}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.3, y: 0.2, z: 0.3}
+  m_Center: {x: 0, y: 0.6, z: 0}
 --- !u!1 &3665310951372015018
 GameObject:
   m_ObjectHideFlags: 0

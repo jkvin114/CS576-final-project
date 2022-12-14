@@ -25,7 +25,8 @@ public enum GridInit
     KEY_FOOD=12,
     OTHER_FOOD=13,
     ENEMY=14,
-    ENEMY_PATH=15
+    ENEMY_PATH=15,
+    PREY=16
 }
 public class Chunk
 {
@@ -40,7 +41,7 @@ public class Chunk
     private Chunk lastChunk;
     internal List<int> pathEnds;
     bool isEmpty=false;
-    ObstacleGenerator obsgen;
+    internal ObstacleGenerator obsgen;
     internal int food = -1;
     public Chunk(int pos, Level level, Chunk lastChunk, bool isEmpty)
     {
@@ -63,7 +64,7 @@ public class Chunk
     }
     Vector3 getItemCoord(int x, int lane)
     {
-        return new Vector3(pos * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength, 1.42f, Level.laneCoordinates[lane]);
+        return new Vector3(pos * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength, 1.38f, Level.laneCoordinates[lane]);
     }
     public void spawnEnemy(float playerSpeed)
     {
@@ -80,7 +81,22 @@ public class Chunk
             {
                 Vector3 pos = getCoord(coord[0], coord[1]);
                 GameObject b = placeObject(level.bear, new Vector3(pos.x, pos.y, Level.laneCoordinates[4] - Level.laneWidth * 0.5f), Quaternion.Euler(0, 0, 0));
-                level.Coroutine(moveEnemy(b, (14f + coord[0] * 0.2f )/ playerSpeed , pos, (int)Direction.LEFT, playerSpeed));
+                level.Coroutine(moveEnemy(b, (13f + coord[0] * 0.2f )/ playerSpeed , pos, (int)Direction.LEFT, playerSpeed));
+            }
+        }
+        foreach (int[] coord in obsgen.foxes)
+        {
+            if (coord[1] == 4 || (Random.Range(0, 2) == 0 && coord[1] != 0))
+            {
+                Vector3 pos = getCoord(coord[0], coord[1]);
+                GameObject b = placeObject(level.fox, new Vector3(pos.x, pos.y, Level.laneCoordinates[0] + Level.laneWidth * 0.5f), Quaternion.Euler(0, 180, 0));
+                level.Coroutine(moveFoxEnemy(b, (14f + coord[0] * 0.2f) / playerSpeed, pos, (int)Direction.RIGHT, playerSpeed));
+            }
+            else
+            {
+                Vector3 pos = getCoord(coord[0], coord[1]);
+                GameObject b = placeObject(level.fox, new Vector3(pos.x, pos.y, Level.laneCoordinates[4] - Level.laneWidth * 0.5f), Quaternion.Euler(0, 0, 0));
+                level.Coroutine(moveFoxEnemy(b, (14f + coord[0] * 0.2f) / playerSpeed, pos, (int)Direction.LEFT, playerSpeed));
             }
         }
         foreach (int[] coord in obsgen.eagles)
@@ -97,11 +113,41 @@ public class Chunk
             GameObject eagle = placeObject(level.eagle, pos, rot);
             level.Coroutine(moveFlyingEnemy(eagle, (8.5f + coord[0] * 0.4f) / playerSpeed, 6.0f/playerSpeed, goalPos));
         }
+        foreach (int[] coord in obsgen.preys)
+        {
+            Vector3 pos = getCoord(coord[0], coord[1]);
+            
+            Quaternion rot = Quaternion.Euler(0, 90, 0);
+            string type = "chicken";
+
+            GameObject obj = level.chickenPrey;
+            if(Random.Range(0, 2) == 0)
+            {
+                type = "rabbit";
+                obj = level.rabbitPrey;
+            }
+            GameObject prey = level.InstantiateObj(obj, pos, rot);
+            level.addPrey(prey);
+            if (type == "chicken")
+            {
+                prey.GetComponent<ChickenPrey>().init(level.maskChunk(obsgen.grid), pathEnds[Random.Range(0, pathEnds.Count - 1)], this.pos, coord[0], coord[1]);
+
+            }
+            else if (type == "rabbit")
+                prey.GetComponent<RabbitPrey>().init(level.maskChunk(obsgen.grid), pathEnds[Random.Range(0, pathEnds.Count - 1)], this.pos, coord[0], coord[1]);
+
+        }
     }
     public IEnumerator moveEnemy(GameObject enemy,float delay, Vector3 pos, int d,float speed)
     {
         yield return new WaitForSeconds(delay);
         enemy.GetComponent<Enemy>().StartMoveTo(speed, pos, d);
+        yield return null;
+    }
+    public IEnumerator moveFoxEnemy(GameObject enemy, float delay, Vector3 pos, int d, float speed)
+    {
+        yield return new WaitForSeconds(delay);
+        enemy.GetComponent<FoxEnemy>().StartMoveTo(speed, pos, d);
         yield return null;
     }
     public IEnumerator moveFlyingEnemy(GameObject enemy, float delay, float timeSpan, Vector3 pos)
@@ -117,7 +163,11 @@ public class Chunk
         if (type == 2) gem = level.gem2;
         if (type == 3) gem = level.gem3;
         gem = placeObject(gem, getItemCoord(row, lane), Quaternion.identity);
-        gem.AddComponent<food>();
+        gem.AddComponent<gem>();
+        if (type == 3) gem.tag = "gem_special";
+        else gem.tag = "gem";
+       // gem.AddComponent<BoxCollider>();
+       // gem.GetComponent<BoxCollider>().size = new Vector3(2f,2f,2f);
     }
     public void placeFood(int row, int lane, bool isKey)
     {
@@ -126,6 +176,9 @@ public class Chunk
         if (isKey) food = level.food1;
         food = placeObject(food, getItemCoord(row, lane), Quaternion.identity);
         food.AddComponent<food>();
+        food.AddComponent<BoxCollider>();
+        if (isKey) food.tag = "key_food";
+        else food.tag = "wrong_food";
     }
     public void placeObstacle(int obs,int row,int lane)
     {
@@ -137,7 +190,7 @@ public class Chunk
         }
             GameObject obstacle = placeObject(level.obstacles[obs], getCoord(row, lane), rot);
         obstacle.tag = "obstacle";
-        obstacle.AddComponent<BoxCollider>();
+        //obstacle.AddComponent<BoxCollider>();
     }
     public void placeLongObstacle(int obs, int row, int lane, int length, int width)
     {
@@ -157,7 +210,7 @@ public class Chunk
             
         GameObject obstacle = placeObject(level.longObstacles[obs],pos , Quaternion.Euler(0,yRot,0));
         obstacle.tag = "obstacle";
-        obstacle.AddComponent<BoxCollider>();
+       // obstacle.AddComponent<BoxCollider>();
     }
     public GameObject placeObject(GameObject prefab, Vector3 pos,Quaternion rot)
     {
@@ -182,7 +235,7 @@ public class Chunk
 
         ground.AddComponent<BoxCollider>();
         ground.GetComponent<BoxCollider>().size = new Vector3(1.0f, 1.0f, 1.0f);
-        ground.transform.position = new Vector3(startPos, Random.Range(0.001f, 0.0f), 0);
+        ground.transform.position = new Vector3(startPos, pos%2==0?0:0.005f, 0);
         biome.addFence(startPos);
 
         List<int> lastPathEnds = new();

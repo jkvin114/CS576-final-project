@@ -7,6 +7,11 @@ TagManager:
   - ground
   - feature
   - obstacle
+  - gem
+  - gem_special
+  - key_food
+  - wrong_food
+  - prey
   layers:
   - Default
   - TransparentFX

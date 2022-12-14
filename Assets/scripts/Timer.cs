@@ -62,7 +62,7 @@ public class Timer : MonoBehaviour
         Debug.Log("test end");
         Debug.Log("test start");
         for(int j = 0; j < 5; j++) {
-            Debug.Log(foodIntList[j]);
+           //Debug.Log(foodIntList[j]);
         }
         Debug.Log("test end");
     }
@@ -74,67 +74,78 @@ public class Timer : MonoBehaviour
         currTimeMemory -= 1 * Time.deltaTime;
         counterText.text = currTime.ToString("0");
         counterTextMemory.text = currTimeMemory.ToString("0");
-    
-        if(currTime <= 0) {
 
-        currentScoreText.text = currentScore.ToString();
-        totalScoreText.text = totalScore.ToString();
+        if (currTime <= 0)
+        {
 
-        if(currTime <= 0) {
-            TimeOver();
-        }
-        if(currTimeMemory <= 0) {
-            foodList.SetActive(false);
-            tracker.SetActive(true);
-            counterTextMemory.enabled = false;
-            disappearText.enabled = false;
-        }
+            currentScoreText.text = currentScore.ToString();
+            totalScoreText.text = totalScore.ToString();
 
-        if(lifePoint == 5) {
-            Heart1.SetActive(true);
-            Heart2.SetActive(true);
-            Heart3.SetActive(true);
-            Heart4.SetActive(true);
-            Heart5.SetActive(true);
-        }
-        else if(lifePoint == 4) {
-            Heart1.SetActive(true);
-            Heart2.SetActive(true);
-            Heart3.SetActive(true);
-            Heart4.SetActive(true);
-            Heart5.SetActive(false);
-        }
-        else if(lifePoint == 3) {
-            Heart1.SetActive(true);
-            Heart2.SetActive(true);
-            Heart3.SetActive(true);
-            Heart4.SetActive(false);
-            Heart5.SetActive(false);
-        }
-        else if(lifePoint == 2) {
-            Heart1.SetActive(true);
-            Heart2.SetActive(true);
-            Heart3.SetActive(false);
-            Heart4.SetActive(false);
-            Heart5.SetActive(false);
-        }
-        else if(lifePoint == 1) {
-            Heart1.SetActive(true);
-            Heart2.SetActive(false);
-            Heart3.SetActive(false);
-            Heart4.SetActive(false);
-            Heart5.SetActive(false);
-        }
-        else if(lifePoint > 5) {
-            lifePoint = 5;
-            Heart1.SetActive(true);
-            Heart2.SetActive(true);
-            Heart3.SetActive(true);
-            Heart4.SetActive(true);
-            Heart5.SetActive(true);
-        }
-        else {
-            SceneManager.LoadScene("GameOver");
+            if (currTime <= 0)
+            {
+               // TimeOver();
+            }
+            if (currTimeMemory <= 0)
+            {
+                foodList.SetActive(false);
+                tracker.SetActive(true);
+                counterTextMemory.enabled = false;
+                disappearText.enabled = false;
+            }
+
+            if (lifePoint == 5)
+            {
+                Heart1.SetActive(true);
+                Heart2.SetActive(true);
+                Heart3.SetActive(true);
+                Heart4.SetActive(true);
+                Heart5.SetActive(true);
+            }
+            else if (lifePoint == 4)
+            {
+                Heart1.SetActive(true);
+                Heart2.SetActive(true);
+                Heart3.SetActive(true);
+                Heart4.SetActive(true);
+                Heart5.SetActive(false);
+            }
+            else if (lifePoint == 3)
+            {
+                Heart1.SetActive(true);
+                Heart2.SetActive(true);
+                Heart3.SetActive(true);
+                Heart4.SetActive(false);
+                Heart5.SetActive(false);
+            }
+            else if (lifePoint == 2)
+            {
+                Heart1.SetActive(true);
+                Heart2.SetActive(true);
+                Heart3.SetActive(false);
+                Heart4.SetActive(false);
+                Heart5.SetActive(false);
+            }
+            else if (lifePoint == 1)
+            {
+                Heart1.SetActive(true);
+                Heart2.SetActive(false);
+                Heart3.SetActive(false);
+                Heart4.SetActive(false);
+                Heart5.SetActive(false);
+            }
+            else if (lifePoint > 5)
+            {
+                lifePoint = 5;
+                Heart1.SetActive(true);
+                Heart2.SetActive(true);
+                Heart3.SetActive(true);
+                Heart4.SetActive(true);
+                Heart5.SetActive(true);
+            }
+            else
+            {
+                SceneManager.LoadScene("GameOver");
+            }
         }
     }
 
@@ -166,7 +177,7 @@ public class Timer : MonoBehaviour
     public void TimeOver() {
         currentScore -= 100;
         lifePoint -= 1;
-        Debug.Log("Lost 1 health!!!!!!");
+       // Debug.Log("Lost 1 health!!!!!!");
         currTime = startTime;
         currTimeMemory = startTimeMemory;
         foodList.SetActive(true);

@@ -9,9 +9,10 @@ public class gem : MonoBehaviour
     // Start is called before the first frame update
     private float obtainTime = 0.3f;
     private bool isObtained=false;
+    Vector3 animDirection;
     void Start()
     {
-        
+        animDirection=new Vector3(3,0,2.5f);
     }
 
     // Update is called once per frame
@@ -20,14 +21,11 @@ public class gem : MonoBehaviour
         if(isObtained)
         {
             Vector3 p = transform.position;
-            if (obtainTime > 0.1) {
-                p.y += 4f * Time.deltaTime;
-            }
-            else
-            {
-                p.y -= 3f * Time.deltaTime;
-            }
+            p.y += 4f * Time.deltaTime;
             
+            p.x += animDirection.x * Time.deltaTime;
+            p.z += animDirection.z * Time.deltaTime;
+
             transform.position = p;
             obtainTime -=Time.deltaTime;
             if(obtainTime < 0) Destroy(gameObject);

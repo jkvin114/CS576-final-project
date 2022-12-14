@@ -40,6 +40,7 @@ public class Timer : MonoBehaviour
 
     public TMP_Text currentScoreText;
     public TMP_Text totalScoreText;
+    public TMP_Text runCountText;
     public GameObject Heart1;
     public GameObject Heart2;
     public GameObject Heart3;
@@ -48,6 +49,7 @@ public class Timer : MonoBehaviour
     public int currentScore;
     public int totalScore;
     public int lifePoint;
+    public int runCount;
     public List<int> foodIntList = new List<int>();
 
     public int currPos;
@@ -89,6 +91,7 @@ public class Timer : MonoBehaviour
         CList.Add(C4);
         CList.Add(C5);
 
+        runCount = 0;
         Time.timeScale = 0;
         startTime = 100f;
         startTimeMemory = 5f;
@@ -111,6 +114,7 @@ public class Timer : MonoBehaviour
         currTimeMemory -= 1 * Time.deltaTime;
         counterText.text = currTime.ToString("0");
         counterTextMemory.text = currTimeMemory.ToString("0");
+        runCountText.text = runCount.ToString("0");
 
         if (currTime > 0)
         {
@@ -214,6 +218,13 @@ public class Timer : MonoBehaviour
         if(lifePoint < 5) {
             lifePoint += 1;
         }
+        runCount += 1;
+        currTime = startTime;
+        currTimeMemory = startTimeMemory;
+        foodList.SetActive(true);
+        tracker.SetActive(false);
+        counterTextMemory.enabled = true;
+        disappearText.enabled = true;
         totalScore += currentScore;
         currentScore = 0;
         currPos = 0;

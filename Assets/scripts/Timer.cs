@@ -26,6 +26,7 @@ public class Timer : MonoBehaviour
     public Transform food04;
     public Transform food05;
     public List<Transform> foodPrefabList = new List<Transform>();
+    public List<GameObject> foodPrefabs;
 
     public GameObject Apple;
     public GameObject Banana;
@@ -48,7 +49,7 @@ public class Timer : MonoBehaviour
     public int currentScore;
     public int totalScore;
     public int lifePoint;
-    public List<int> foodIntList = new List<int>(new int[5]);
+    public List<int> foodIntList = new List<int>();
 
     public int currPos;
     public GameObject Q1;
@@ -65,6 +66,7 @@ public class Timer : MonoBehaviour
     public List<GameObject> QList = new List<GameObject>();
     public List<GameObject> CList = new List<GameObject>();
 
+    public Level level;
 
     // Start is called before the first frame update
     void Start()
@@ -75,6 +77,7 @@ public class Timer : MonoBehaviour
         foodPrefabList.Add(food04);
         foodPrefabList.Add(food05);
 
+        foodPrefabs = new List<GameObject>() {Apple,Banana,Candy,Garlic,Hamburger,Mushroom,Lemon,Pumpkin,Waffle,Watermelon };
         currPos = 0;
         QList.Add(Q1);
         QList.Add(Q2);
@@ -88,7 +91,7 @@ public class Timer : MonoBehaviour
         CList.Add(C5);
 
         Time.timeScale = 0;
-        startTime = 10f;
+        startTime = 100f;
         startTimeMemory = 5f;
         currTime = startTime;
         currTimeMemory = startTimeMemory;
@@ -193,6 +196,7 @@ public class Timer : MonoBehaviour
         QList[currPos].SetActive(false);
         CList[currPos].SetActive(true);
         currPos += 1;
+        level.onGetRightFood();
     }
     
     public void HitsWrongFood() {
@@ -261,13 +265,14 @@ public class Timer : MonoBehaviour
         while(i < 5) {
             newNumber = Random.Range(1,11);
             if(!foodIntList.Contains(newNumber)) {
-                foodIntList[i] = newNumber;
+                foodIntList.Add(newNumber);
                 i++;
             }
         }
         for(int j = 0; j < 5; j++) {
             SpawnFood(j, foodIntList[j]);
         }
+        level.onSpawnFood(foodIntList);
     }
 
     public void DestroyFoodList() {

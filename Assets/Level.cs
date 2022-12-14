@@ -186,9 +186,10 @@ public class Level : MonoBehaviour
     }
     public GameObject nextKeyFood()
     {
+        Debug.Log(keyFoods.Count);
         if(nextFood < keyFoods.Count)
         {
-          //  return timer.foodPrefabs[keyFoods[nextFood]-1];
+            return timer.foodPrefabs[keyFoods[nextFood]-1];
         }
         return null;
     }
@@ -215,7 +216,7 @@ public class Level : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         StartCoroutine(initlalGeneration());
-       // timer.GenerateFoodList();
+        timer.GenerateFoodList();
         yield return null;
     }
     public void onSpawnFood(List<int> keyFoods)
@@ -224,6 +225,7 @@ public class Level : MonoBehaviour
         nextFood = 0;
         keyFoods.Clear();
         this.keyFoods= keyFoods;
+        Debug.Log(keyFoods);
     }
     public void addPrey(GameObject p)
     {

@@ -40,6 +40,7 @@ public class Prey : MonoBehaviour
     protected float reactionDistance = 0;
     protected bool dead=false;
     Vector3 targetGridOffset;
+    float speedMultiplier=1;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,7 +56,7 @@ public class Prey : MonoBehaviour
     }
     public void init(List<GridInit[]> newChunk, int endLane, int chunkPos, int x, int z)
     {
-
+        speedMultiplier = Random.Range(0.75f, 0.95f);
         posX = x;
         posZ = z;
         //  map.AddRange(newChunk);
@@ -262,7 +263,7 @@ public class Prey : MonoBehaviour
         Vector3 direction = targetPos - transform.position;
         // Debug.Log(direction);
         direction.Normalize();
-        direction *= playerSpeed * 0.9f * Time.deltaTime;
+        direction *= playerSpeed * speedMultiplier * Time.deltaTime;
         Vector3 newpos = new Vector3(transform.position.x + direction.x, Level.bottomY + (Mathf.Sin(Time.time * 30 * playerSpeed) + 1) / 70.0f,
             transform.position.z + direction.z);
         transform.position = newpos;

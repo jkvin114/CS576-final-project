@@ -10,7 +10,6 @@ using System;
 
 public class Timer : MonoBehaviour
 {
-
     public float currTime;
     public float startTime;
     public float currTimeMemory;
@@ -101,6 +100,8 @@ public class Timer : MonoBehaviour
         lifePoint = 5;
 
         GenerateFoodList();
+
+        Directory.CreateDirectory(Application.streamingAssetsPath + "/InputLogs");
     }
 
     // Update is called once per frame
@@ -175,6 +176,11 @@ public class Timer : MonoBehaviour
             }
             else
             {
+                totalScore += currentScore;
+                Debug.Log(totalScore);
+                string docName = Application.streamingAssetsPath + "/InputLogs/" + "score" + ".txt";
+                File.WriteAllText(docName, "");
+                File.AppendAllText(docName, totalScore.ToString());
                 SceneManager.LoadScene("GameOver");
             }
         }

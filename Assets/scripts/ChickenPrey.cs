@@ -23,7 +23,10 @@ public class ChickenPrey : Prey
         Debug.Log(player);
         if (Random.Range(0, 10) == 0) reactionDistance = 0.6f;
     }
-
+    public override void caught()
+    {
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Chicken);
+    }
     protected override void retire()
     {
         dead=true;
@@ -40,6 +43,8 @@ public class ChickenPrey : Prey
     }
     public override void Move()
     {
+      //  SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Chicken);
+
         animator.SetBool("Eat", false);
         animator.SetBool("Run", true);
         base.Move();

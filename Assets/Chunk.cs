@@ -141,6 +141,8 @@ public class Chunk
     public IEnumerator moveEnemy(GameObject enemy,float delay, Vector3 pos, int d,float speed)
     {
         yield return new WaitForSeconds(delay);
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Bear);
+
         enemy.GetComponent<Enemy>().StartMoveTo(speed, pos, d);
         yield return null;
     }
@@ -153,6 +155,8 @@ public class Chunk
     public IEnumerator moveFlyingEnemy(GameObject enemy, float delay, float timeSpan, Vector3 pos)
     {
         yield return new WaitForSeconds(delay);
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Eagle);
+
         enemy.GetComponent<FlyingEnemy>().StartMoveTo(timeSpan, pos);
         yield return null;
     }

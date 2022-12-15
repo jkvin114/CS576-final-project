@@ -26,7 +26,11 @@ public class RabbitPrey : Prey
     }
     protected override void onStart()
     {
-        
+
+    }
+    public override void caught()
+    {
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Rabbit);
     }
     protected override void retire()
     {
@@ -38,6 +42,8 @@ public class RabbitPrey : Prey
     }
     public override void Move()
     {
+        //SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Rabbit);
+
         animator.SetTrigger("Run");
         base.Move();
 

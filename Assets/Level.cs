@@ -68,7 +68,7 @@ public class Level : MonoBehaviour
     internal float[] laneBounds = new float[6];
     private int numTerrains=0;
     public int difficulty = 3;
-    public int difficultyIncreaseRate;
+    public int difficultyIncreaseFrequency;
 
     public GameObject gem1;
     public GameObject gem2;
@@ -161,7 +161,7 @@ public class Level : MonoBehaviour
         GameObject player = isChicken ? chickenPlayer : foxPlayer;
         if(player.transform.position.x > chunks.Last.Value.pos*chunkLength - chunkLength * 2 && isGameStarted)
         {
-            if (chunks.Last.Value.pos % difficultyIncreaseRate == difficultyIncreaseRate-1)
+            if (chunks.Last.Value.pos % difficultyIncreaseFrequency == difficultyIncreaseFrequency - 1)
             {
                 difficulty++;
                 if(isChicken)
@@ -196,9 +196,15 @@ public class Level : MonoBehaviour
     }
     public GameObject nextWrongFood()
     {
+        List<int> wrongFoods= new List<int>();
+        for(int i = 1; i <= timer.foodPrefabs.Count; i++)
+        {
+            if(!keyFoods.Contains(i)) wrongFoods.Add(i);
+        }
+
         if (nextFood < keyFoods.Count)
         {
-            return food1;
+            return timer.foodPrefabs[wrongFoods[Random.Range(0,wrongFoods.Count-1)]-1];
         }
         return null;
     }
@@ -210,16 +216,15 @@ public class Level : MonoBehaviour
         {
             StartCoroutine(spawnFood());
             nextFood = 0;
-            keyFoods.Clear();
         }
     }
     IEnumerator spawnFood()
     {
         canGenerateFood= false;
-        yield return new WaitForSeconds(15/foxPlayer.GetComponent<Fox>().running_velocity);
+        yield return new WaitForSeconds(8.0f/foxPlayer.GetComponent<Fox>().running_velocity);
         StartCoroutine(initlalGeneration());
-        timer.GenerateFoodList();
-        canGenerateFood = false;
+        timer.CompletesList();
+        canGenerateFood = true;
 
         yield return null;
     }
@@ -227,7 +232,6 @@ public class Level : MonoBehaviour
     {
 
         nextFood = 0;
-        keyFoods.Clear();
         this.keyFoods= keyFoods;
         Debug.Log(keyFoods);
     }

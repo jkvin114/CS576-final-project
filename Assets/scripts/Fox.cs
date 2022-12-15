@@ -64,10 +64,12 @@ public class Fox : MonoBehaviour
         orignalPosition.x = transform.position.x;
         transform.position = orignalPosition;
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("obstacle")  && !isInvulnerable)
         {
+            other.gameObject.tag = "Untagged";
+
             //   Debug.Log("obstacle");
             //return;
             isInvulnerable = true;
@@ -76,9 +78,13 @@ public class Fox : MonoBehaviour
             StartCoroutine(Shake(0.15f, 0.1f));
             UIController.GetComponent<Timer>().HitsObstacle();
             MainCamera.GetComponent<Follow_player>().Shake();
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Hit);
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.FoxHit);
+
         }
         if (other.gameObject.CompareTag("gem"))
         {
+            other.gameObject.tag = "Untagged";
             other.gameObject.GetComponent<gem>().Obtain();
             UIController.GetComponent<Timer>().HitsNormalGem();
             Vector3 pos = transform.position;
@@ -87,9 +93,13 @@ public class Fox : MonoBehaviour
 
             particle.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             particle.GetComponent<ParticleSystem>().Play();
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Gem);
+
         }
         if (other.gameObject.CompareTag("gem_special"))
         {
+            other.gameObject.tag = "Untagged";
+
             Vector3 pos = transform.position;
             pos.x = transform.position.x + 0.2f;
             GameObject particle = Instantiate(gem_particle, pos, Quaternion.identity);
@@ -98,9 +108,12 @@ public class Fox : MonoBehaviour
             UIController.GetComponent<Timer>().HitsSpecialGem();
             particle.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
             particle.GetComponent<ParticleSystem>().Play();
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Gem);
+
         }
         if (other.gameObject.CompareTag("key_food"))
         {
+            other.gameObject.tag = "Untagged";
 
             other.gameObject.GetComponent<food>().Obtain();
             UIController.GetComponent<Timer>().HitsCorrectFood(); 
@@ -110,20 +123,29 @@ public class Fox : MonoBehaviour
 
             particle.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             particle.GetComponent<ParticleSystem>().Play();
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.RightFood);
+
         }
         if (other.gameObject.CompareTag("wrong_food"))
         {
+            other.gameObject.tag = "Untagged";
+
             other.gameObject.GetComponent<food>().Obtain();
             UIController.GetComponent<Timer>().HitsWrongFood();
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.WrongFood);
+
         }
         if (other.gameObject.CompareTag("prey"))
         {
+            other.gameObject.tag = "Untagged";
+
             animation_controller.SetTrigger("Eat");
             other.gameObject.GetComponent<Prey>().caught();
             UIController.GetComponent<Timer>().HitsSpecialGem();
             Vector3 pos = transform.position;
             pos.x = transform.position.x + 0.2f;
             GameObject particle = Instantiate(white_particle, pos, Quaternion.identity);
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Eat);
 
             particle.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         }

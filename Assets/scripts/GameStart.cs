@@ -10,9 +10,11 @@ public class GameStart : MonoBehaviour
     public TMP_Text scoreText;
 
     void Start() {
-        string path = @"C:\Github\CS576-final-project\Assets\StreamingAssets\InputLogs\score.txt";
-        string displayScore = File.ReadAllText(path);
-        scoreText.text = displayScore;
+       // string path = @"\Assets\StreamingAssets\InputLogs\score.txt";
+  //      string displayScore = File.ReadAllText(path);
+        
+
+        scoreText.text = PlayerPrefs.GetString("score"); ;
     }
 
     public void LoadGame() {

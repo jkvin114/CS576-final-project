@@ -13,13 +13,13 @@ public class Menu : MonoBehaviour
         menu.gameObject.SetActive(true);
         tutorial.gameObject.SetActive(true);
         Time.timeScale = 0;
-        ClickSFX.click_instance.Audio.PlayOneShot(ClickSFX.click_instance.Click);
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Click);
     }
 
     public void CloseMenu() {
         menu.gameObject.SetActive(false);
         tutorial.gameObject.SetActive(false);
         Time.timeScale = 1;
-        ClickSFX.click_instance.Audio.PlayOneShot(ClickSFX.click_instance.Click);
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Click);
     }
 }

@@ -50,7 +50,7 @@ public class Timer : MonoBehaviour
     public int totalScore;
     public int lifePoint;
     public int runCount;
-    public List<int> foodIntList = new List<int>();
+    public List<int> foodIntList = new List<int>(new int[5]);
 
     public int currPos;
     public GameObject Q1;
@@ -94,7 +94,7 @@ public class Timer : MonoBehaviour
         runCount = 0;
         Time.timeScale = 0;
         startTime = 100f;
-        startTimeMemory = 5f;
+        startTimeMemory = 7f;
         currTime = startTime;
         currTimeMemory = startTimeMemory;
 
@@ -182,9 +182,11 @@ public class Timer : MonoBehaviour
             {
                 totalScore += currentScore;
                 Debug.Log(totalScore);
-                string docName = Application.streamingAssetsPath + "/InputLogs/" + "score" + ".txt";
-                File.WriteAllText(docName, "");
-                File.AppendAllText(docName, totalScore.ToString());
+                //string docName = Application.streamingAssetsPath + "/InputLogs/" + "score" + ".txt";
+                // File.WriteAllText(docName, "");
+                //  File.AppendAllText(docName, totalScore.ToString());
+                PlayerPrefs.SetString("score", totalScore.ToString());
+
                 SceneManager.LoadScene("GameOver");
             }
         }
@@ -282,7 +284,7 @@ public class Timer : MonoBehaviour
         while(i < 5) {
             newNumber = Random.Range(1,11);
             if(!foodIntList.Contains(newNumber)) {
-                foodIntList.Add(newNumber);
+                foodIntList[i]=(newNumber);
                 i++;
             }
         }

@@ -68,7 +68,7 @@ public class Prey : MonoBehaviour
 
         //Debug.Log(path.Count);
     }
-    public void caught()
+    public virtual void caught()
     {
         Destroy(gameObject);
     }

@@ -19,7 +19,7 @@ public class FlyingEnemy : MonoBehaviour
     void Start()
     {
         descendTime = Random.Range(0.6f, 0.85f);
-        leavingDirection=new Vector3(3,3, Random.Range(-4, 4));
+        leavingDirection=new Vector3(2,6, Random.Range(-3, 3));
         //leavingDirection.Normalize();
         gameObject.tag = "obstacle";
     }

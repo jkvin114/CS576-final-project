@@ -47,7 +47,7 @@ public class gem : MonoBehaviour
             up = !up;
             count= 0;
         }
-        transform.position = pos;
+        //transform.position = pos;
         Vector3 rot=transform.rotation.eulerAngles;
         rot.y += 50 *Time.deltaTime;
         transform.rotation=Quaternion.Euler(rot);

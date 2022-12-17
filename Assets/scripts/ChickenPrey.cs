@@ -25,11 +25,13 @@ public class ChickenPrey : Prey
     }
     public override void caught()
     {
-        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Chicken);
+        
+        retire();
     }
     protected override void retire()
     {
-        dead=true;
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Chicken);
+        dead =true;
         isMoving = false;
         
         transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 90);

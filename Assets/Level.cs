@@ -126,7 +126,7 @@ public class Level : MonoBehaviour
         //Instantiate(player, , );
         // terrains =new GameObject[5]{plain_terrain ,rocky_terrain, forest_terrain ,mountain_terrain,rocky_mountain_terrain};
         // fences = new GameObject[2] { fence1, fence2 };
-        StartCoroutine(initlalGeneration());
+        StartCoroutine(createEmptyChunks());
 
         
         return;
@@ -136,7 +136,7 @@ public class Level : MonoBehaviour
         StartCoroutine(func);
     }
 
-    public IEnumerator initlalGeneration()
+    public IEnumerator createEmptyChunks()
     {
         int count = 2;
         for(int i=0;i<count; i++) {
@@ -221,8 +221,8 @@ public class Level : MonoBehaviour
     IEnumerator spawnFood()
     {
         canGenerateFood= false;
+        StartCoroutine(createEmptyChunks());
         yield return new WaitForSeconds(8.0f/foxPlayer.GetComponent<Fox>().running_velocity);
-        StartCoroutine(initlalGeneration());
         timer.CompletesList();
         canGenerateFood = true;
 
@@ -247,8 +247,15 @@ public class Level : MonoBehaviour
             chunks.Last.Value.populate();
             lastChunk = chunks.Last.Value;
         }
-        Chunk chunk = new(numTerrains,this,lastChunk, isEmpty);
-        chunk.generate(canGenerateFood&& numTerrains%5==3);//numTerrains%Random.Range(3,5)==2
+        int biome = -1;
+        int runs = timer.runCount;
+        if (runs == 0) biome = 0; //plains
+        if (runs == 1|| runs == 2) biome = 1; //forest or mountain
+        if (runs == 3 || runs == 4) biome = 2; //rock biomes
+
+
+        Chunk chunk = new(numTerrains,this,lastChunk, isEmpty,biome);
+        chunk.generate(canGenerateFood&& numTerrains%4==3);//numTerrains%Random.Range(3,5)==2
         chunk.spawnEnemy(currentPlayerSpeed);
         List<GridInit[]> chunkMask = maskChunk(chunk.obsgen.grid);
         updatePreys(chunkMask,chunk.pathEnds);

@@ -30,10 +30,13 @@ public class RabbitPrey : Prey
     }
     public override void caught()
     {
-        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Rabbit);
+        
+        
+        retire();
     }
     protected override void retire()
     {
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Rabbit);
         dead = true;
         isMoving= false;
 

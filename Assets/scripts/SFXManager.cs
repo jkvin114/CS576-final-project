@@ -7,9 +7,12 @@ public class SFXManager : MonoBehaviour
     public AudioSource Audio;
     public AudioClip Click;
     public AudioClip Bear;
+    public AudioClip Bear2;
     public AudioClip Chicken;
     public AudioClip Rabbit;
     public AudioClip Gem;
+    public AudioClip Gem2;
+
     public AudioClip RightFood;
     public AudioClip WrongFood;
 
@@ -17,7 +20,10 @@ public class SFXManager : MonoBehaviour
     public AudioClip Eagle;
     public AudioClip Hit;
     public AudioClip FoxHit;
+    public AudioClip Gameover;
+    public AudioClip Score;
 
+    public AudioClip FoodComplete;
 
     public static SFXManager sfx_instance;
 

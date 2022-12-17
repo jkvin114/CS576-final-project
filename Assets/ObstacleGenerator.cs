@@ -400,7 +400,7 @@ class RandomObstacleGenerator : ObstacleGenerator
             pathList[pathNum].Add(new int[] { row, lane });
 
             // if(!isHard)
-            if (!(difficulty > 7 && isHard && Random.Range(6, 20) < difficulty))
+            if (!(difficulty > 7 && isHard && Random.Range(6, 30) < difficulty))
             {
                 grid[row + 1, lane] = GridInit.EMPTY;
             }

@@ -26,11 +26,34 @@ public abstract class Biome
         chunkpos = 0;
     }
     
-    private static TerrainType selectBiome(int pos)
+    private static TerrainType selectBiome(int pos,int type)
     {
      //   return TerrainType.ROCKY_MOUNTAIN;
         float noise = Mathf.PerlinNoise((pos + Level.biomeSeed)/20, 0);
-   
+        if (type == 0) return TerrainType.PLAIN;
+        if (type == 1)
+        {
+            if (noise < 0.5)
+            {
+                return TerrainType.FOREST;
+            }
+            else
+            {
+                return TerrainType.MOUNTAIN;
+            }
+        }
+        if (type == 2)
+        {
+            if (noise < 0.5)
+            {
+                return TerrainType.ROCKY;
+            }
+            else
+            {
+                return TerrainType.ROCKY_MOUNTAIN;
+            }
+        }
+
         if (noise < 0.3)
         {
             return TerrainType.MOUNTAIN;
@@ -53,9 +76,13 @@ public abstract class Biome
         }
     }
 
-    public static Biome GetBiome(int pos,Level level, Chunk chunk)
+    public static Biome GetBiome(int pos,Level level, Chunk chunk,int biome)
     {
-        TerrainType b = selectBiome(pos);
+
+
+        TerrainType b = selectBiome(pos, biome);
+
+
         switch (b)
         {
                 case TerrainType.PLAIN:

@@ -43,15 +43,15 @@ public class Chunk
     bool isEmpty=false;
     internal ObstacleGenerator obsgen;
     internal int food = -1;
-    public Chunk(int pos, Level level, Chunk lastChunk, bool isEmpty)
+    public Chunk(int pos, Level level, Chunk lastChunk, bool isEmpty,int biome)
     {
         this.isEmpty= isEmpty;
         this.lastChunk= lastChunk;
         biomeNoise = Mathf.PerlinNoise((pos + Level.biomeSeed) / 20, 0);
         decorationNoise = Mathf.PerlinNoise((pos + Level.decorationSeed) / 10, 0);
         this.pos = pos;
-        biome = Biome.GetBiome(pos,level,this);
-        biome.chunkpos = pos;
+        this.biome = Biome.GetBiome(pos,level,this, biome);
+        this.biome.chunkpos = pos;
         this.level = level;
 
         //difficulty 0~1 : 0%, difficulty 5: 50%, difficulty 9: 100%
@@ -64,7 +64,7 @@ public class Chunk
     }
     Vector3 getItemCoord(int x, int lane)
     {
-        return new Vector3(pos * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength, 1.38f, Level.laneCoordinates[lane]);
+        return new Vector3(pos * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength, 1.5f, Level.laneCoordinates[lane]);
     }
     public void spawnEnemy(float playerSpeed)
     {
@@ -141,8 +141,10 @@ public class Chunk
     public IEnumerator moveEnemy(GameObject enemy,float delay, Vector3 pos, int d,float speed)
     {
         yield return new WaitForSeconds(delay);
-        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Bear);
-
+        if(Random.Range(0,2)==0)
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Bear);
+        else
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Bear2);
         enemy.GetComponent<Enemy>().StartMoveTo(speed, pos, d);
         yield return null;
     }

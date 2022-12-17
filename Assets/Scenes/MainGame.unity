@@ -276,7 +276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement_direction: {x: 0, y: 0, z: 0}
-  running_velocity: 1.4
+  running_velocity: 1.5
   side_velocity: 0
   normalMat: {fileID: 2100000, guid: 4ad23863efbf001479d8ebd01ef00654, type: 2}
   transparentMat: {fileID: 2100000, guid: 13209a29f1b6a3e4fa22a0c8bf0a6fb5, type: 2}
@@ -2026,7 +2026,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2036,7 +2036,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 24
-    m_FontStyle: 0
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 40
@@ -2513,16 +2513,16 @@ MonoBehaviour:
   food05: {fileID: 1358154246}
   foodPrefabList: []
   foodPrefabs: []
-  Apple: {fileID: 100000, guid: 8db774d63ffa4304fb8dddd6116ead54, type: 3}
-  Banana: {fileID: 100000, guid: 3a9857ff38f5efa41ae3ff3ff643f2bd, type: 3}
-  Candy: {fileID: 100000, guid: 7149044102d4ffe418bfc28480b28ad7, type: 3}
-  Garlic: {fileID: 100000, guid: 643b9bf033a68bd4fb7df391ed53589a, type: 3}
-  Hamburger: {fileID: 100000, guid: f9e7ed08898d80148b9f645cd07c8b8e, type: 3}
-  Mushroom: {fileID: 100000, guid: b53fab1a8a71cf745ad1af6d16214489, type: 3}
-  Lemon: {fileID: 100000, guid: c7babd0d9f849c9449d1c29e86f6245f, type: 3}
-  Pumpkin: {fileID: 100000, guid: e0104657a83d1374b8e7cda818970954, type: 3}
-  Waffle: {fileID: 100000, guid: 5a5788db97aee9d4fa6e7b9c436e11f2, type: 3}
-  Watermelon: {fileID: 100000, guid: d9b493bbd86ef3443a770a279d0426a9, type: 3}
+  Apple: {fileID: 100000, guid: e0850b7880d07a849acfbc652fb13a0c, type: 3}
+  Banana: {fileID: 100000, guid: 0ddbeacd1ca74f94aaab8b1e7927a761, type: 3}
+  Candy: {fileID: 100000, guid: ee854d17d56b8e544a03544f98c37f84, type: 3}
+  Garlic: {fileID: 100000, guid: 85e84aa316cc3af4e87c58316f49eaa6, type: 3}
+  Hamburger: {fileID: 100000, guid: 4de65702bcb21eb42b3381fd6d993633, type: 3}
+  Mushroom: {fileID: 100000, guid: df22254c96b28294285927353990504a, type: 3}
+  Lemon: {fileID: 100000, guid: 72d713d34dc56404a8a471bf6442dc18, type: 3}
+  Pumpkin: {fileID: 100000, guid: 7ec0c131a0ae7ff4899d32713f76fdde, type: 3}
+  Waffle: {fileID: 100000, guid: 3979fc344ea68734aab935fce2e696bb, type: 3}
+  Watermelon: {fileID: 100000, guid: c0f569a43974bd94980a3c0b116edfbc, type: 3}
   currentScoreText: {fileID: 1556362573}
   totalScoreText: {fileID: 1890599009}
   runCountText: {fileID: 351024032}
@@ -2550,6 +2550,7 @@ MonoBehaviour:
   QList: []
   CList: []
   level: {fileID: 1198145007}
+  player: {fileID: 23722888}
 --- !u!4 &825942730
 Transform:
   m_ObjectHideFlags: 0
@@ -3148,7 +3149,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 77b5c57f2f964a54fad31d295b8c4496, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 46d3ef72bd6e82248bf59c913a582dc0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -3261,6 +3262,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4134daba04f6910498aec3640dfac368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BGM2: {fileID: 8300000, guid: e63443c2d3ede61429742396a7d915e2, type: 3}
+  BGM3: {fileID: 8300000, guid: e8a60251c9cfced45bc41f24158bf673, type: 3}
+  BGM4: {fileID: 8300000, guid: a9495818c8ceb81488d808e91a988207, type: 3}
 --- !u!1 &1041284286
 GameObject:
   m_ObjectHideFlags: 0
@@ -3869,7 +3873,7 @@ MonoBehaviour:
   - {fileID: 375851789060448813, guid: 5e3231c1c2074074d8dd7e6d5ece627c, type: 3}
   - {fileID: 3506083639121636714, guid: 11a34ac4aca1aa94d9f061533bddb3dd, type: 3}
   difficulty: 0
-  difficultyIncreaseRate: 2
+  difficultyIncreaseFrequency: 7
   gem1: {fileID: 8711430376782347642, guid: 9f8c191ca4eb0d849bbf2fd15b570adf, type: 3}
   gem2: {fileID: 8168887881479703389, guid: f74fce18830e928408ee515e0059ec52, type: 3}
   gem3: {fileID: 6876439152349069732, guid: ac532ea120130d24f876ac6e7a9f4ea4, type: 3}
@@ -3927,6 +3931,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Audio: {fileID: 1271997788}
   Click: {fileID: 8300000, guid: 886a14fad0506cf4ca5b227d82dce054, type: 3}
+  Bear: {fileID: 8300000, guid: 680798497f1cfaa4ca46294e99565480, type: 3}
+  Bear2: {fileID: 8300000, guid: d5bc17f400f9d98429ec556c4c338d99, type: 3}
+  Chicken: {fileID: 8300000, guid: 4f1c1314133046d47911e3c7d8eb6537, type: 3}
+  Rabbit: {fileID: 8300000, guid: 44ea834a9b9c3ec4cb4c85e62698f995, type: 3}
+  Gem: {fileID: 8300000, guid: 8e033a20b218468468cec696381da8c3, type: 3}
+  Gem2: {fileID: 8300000, guid: 10ed66e4690c691409932b8e2e37bbd3, type: 3}
+  RightFood: {fileID: 8300000, guid: 94dcf83c524f63e4588ba984f9e23a3c, type: 3}
+  WrongFood: {fileID: 8300000, guid: 9d369f416dd879b44bcca5cb1c4ac8a0, type: 3}
+  Eat: {fileID: 8300000, guid: 69b824deaa9bd6c42983aaf549a6bc0a, type: 3}
+  Eagle: {fileID: 8300000, guid: 78704202526fa6b40bc77f0f817c8534, type: 3}
+  Hit: {fileID: 8300000, guid: a7a7891997de4474387ab1f0d739b660, type: 3}
+  FoxHit: {fileID: 8300000, guid: 672dcf64caaf3ec4d8a73b667c90b259, type: 3}
+  Gameover: {fileID: 8300000, guid: eeff5276cb5cbb1469a828f7a82d3814, type: 3}
+  Score: {fileID: 8300000, guid: 701cbaa86e497ca4bb8715fad9bbf859, type: 3}
+  FoodComplete: {fileID: 8300000, guid: a1d6b744e2b726d429273040412ec776, type: 3}
 --- !u!82 &1271997788
 AudioSource:
   m_ObjectHideFlags: 0

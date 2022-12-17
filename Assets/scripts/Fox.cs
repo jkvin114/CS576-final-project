@@ -27,6 +27,7 @@ public class Fox : MonoBehaviour
     public GameObject gem_particle;
     public GameObject white_particle;
     int inputBuffer = 0;
+    bool alive = true;
     void Start()
     {
         animation_controller = GetComponent<Animator>();
@@ -40,11 +41,14 @@ public class Fox : MonoBehaviour
     }
     public float increaseSpeed()
     {
-        if(running_velocity<=4f)
-            running_velocity += 0.2f;
+        if(running_velocity<=3.5f)
+            running_velocity += 0.15f;
+        else
+            running_velocity += 0.07f;
+
         animation_controller.speed = running_velocity;
-        if (running_velocity > 3.0f) {
-        } 
+
+        UIController.GetComponent<Timer>().startTime = 300.0f / running_velocity;
         return running_velocity;    
     }
     IEnumerator Shake(float duration, float magnitude)
@@ -54,6 +58,7 @@ public class Fox : MonoBehaviour
 
         while (elapsed < duration)
         {
+            if (!alive) break;
             float z = transform.position.z+Random.Range(-1f, 1f) * magnitude;
             float y = transform.position.y+ Random.Range(-1f, 1f) * magnitude;
 
@@ -64,17 +69,32 @@ public class Fox : MonoBehaviour
         orignalPosition.x = transform.position.x;
         transform.position = orignalPosition;
     }
-    private void OnTriggerStay(Collider other)
+    public void death()
     {
-        if (other.gameObject.CompareTag("obstacle")  && !isInvulnerable)
+        if (!alive) return;
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Gameover);
+
+        alive = false;
+        animation_controller.SetTrigger("Death");
+        transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 90);
+        running_velocity = 0;
+    }
+
+    public void setInvulnerable(int time) {
+        isInvulnerable = true;
+        invulTime = time;
+        transform.GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material = transparentMat;
+
+    }
+    void collideObject(Collider other)
+    {
+        if (other.gameObject.CompareTag("obstacle") && !isInvulnerable)
         {
             other.gameObject.tag = "Untagged";
 
             //   Debug.Log("obstacle");
             //return;
-            isInvulnerable = true;
-            invulTime = 3;
-            transform.GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material=transparentMat;
+            setInvulnerable(3);
             StartCoroutine(Shake(0.15f, 0.1f));
             UIController.GetComponent<Timer>().HitsObstacle();
             MainCamera.GetComponent<Follow_player>().Shake();
@@ -91,7 +111,8 @@ public class Fox : MonoBehaviour
             pos.x = transform.position.x + 0.4f;
             GameObject particle = Instantiate(gem_particle, pos, Quaternion.identity);
 
-            particle.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            particle.transform.localScale = new Vector3(0.003f, 0.003f, 0.003f);
+            particle.transform.parent = other.transform;
             particle.GetComponent<ParticleSystem>().Play();
             SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Gem);
 
@@ -106,9 +127,10 @@ public class Fox : MonoBehaviour
 
             other.gameObject.GetComponent<gem>().Obtain();
             UIController.GetComponent<Timer>().HitsSpecialGem();
-            particle.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+            particle.transform.localScale = new Vector3(0.006f, 0.006f, 0.006f);
+            particle.transform.parent = other.transform;
             particle.GetComponent<ParticleSystem>().Play();
-            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Gem);
+            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Gem2);
 
         }
         if (other.gameObject.CompareTag("key_food"))
@@ -116,12 +138,12 @@ public class Fox : MonoBehaviour
             other.gameObject.tag = "Untagged";
 
             other.gameObject.GetComponent<food>().Obtain();
-            UIController.GetComponent<Timer>().HitsCorrectFood(); 
+            UIController.GetComponent<Timer>().HitsCorrectFood();
             Vector3 pos = transform.position;
             pos.x = transform.position.x + 0.2f;
             GameObject particle = Instantiate(food_particle, pos, Quaternion.identity);
 
-            particle.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            particle.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             particle.GetComponent<ParticleSystem>().Play();
             SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.RightFood);
 
@@ -147,11 +169,21 @@ public class Fox : MonoBehaviour
             GameObject particle = Instantiate(white_particle, pos, Quaternion.identity);
             SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Eat);
 
-            particle.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            particle.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            particle.transform.parent = other.transform;
         }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        collideObject(other);
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        collideObject(other);
     }
     void Update()
     {
+        if (!alive) return;
         MainCamera.GetComponent<Follow_player>().Follow(transform);
         invulTime -= Time.deltaTime;
         if (invulTime < 0 && isInvulnerable)

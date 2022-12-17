@@ -70,7 +70,8 @@ public class Prey : MonoBehaviour
     }
     public virtual void caught()
     {
-        Destroy(gameObject);
+        retire();
+        //Destroy(gameObject);
     }
     protected virtual void setAnimatorSpeed(float speed)
     {
@@ -237,11 +238,11 @@ public class Prey : MonoBehaviour
             && transform.position.x < getXCoord(posX) + tol)
         {
 
-            if (path.Count > posX && path[posX].isObstacle)
-            {
-                Debug.Log("retire");
-                return;
-            }
+           // if (path.Count > posX && path[posX].isObstacle)
+        //    {
+         //       Debug.Log("retire");
+        //        return;
+         //   }
             pathPos++;
             if (path.Count > pathPos)
             {

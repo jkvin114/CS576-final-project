@@ -69,9 +69,13 @@ public class Timer : MonoBehaviour
 
     public Level level;
 
+    public GameObject player;
+    bool alive = true;
     // Start is called before the first frame update
     void Start()
     {
+        BGM.BGM_instance.GetComponent<AudioSource>().Play();
+
         foodPrefabList.Add(food01);
         foodPrefabList.Add(food02);
         foodPrefabList.Add(food03);
@@ -93,7 +97,7 @@ public class Timer : MonoBehaviour
 
         runCount = 0;
         Time.timeScale = 0;
-        startTime = 100f;
+        startTime = 120f;
         startTimeMemory = 7f;
         currTime = startTime;
         currTimeMemory = startTimeMemory;
@@ -110,6 +114,7 @@ public class Timer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!alive) return;
         currTime -= 1 * Time.deltaTime;
         currTimeMemory -= 1 * Time.deltaTime;
         counterText.text = currTime.ToString("0");
@@ -180,31 +185,40 @@ public class Timer : MonoBehaviour
             }
             else
             {
-                totalScore += currentScore;
-                Debug.Log(totalScore);
-                //string docName = Application.streamingAssetsPath + "/InputLogs/" + "score" + ".txt";
-                // File.WriteAllText(docName, "");
-                //  File.AppendAllText(docName, totalScore.ToString());
-                PlayerPrefs.SetString("score", totalScore.ToString());
+                alive = false;
+                Heart1.SetActive(false);
 
-                SceneManager.LoadScene("GameOver");
+                totalScore += currentScore;
+                player.GetComponent<Fox>().death();
+                StartCoroutine(onDeath());
             }
         }
         else if (currTime <= 0) {
             TimeOver();
         }
     }
+    IEnumerator onDeath()
+    {
+        yield return new WaitForSeconds(3);
+        PlayerPrefs.SetString("score", totalScore.ToString());
+        BGM.BGM_instance.GetComponent<AudioSource>().Stop();
+        SFXManager.sfx_instance.GetComponent<AudioSource>().Stop();
+        SceneManager.LoadScene("GameOver");
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Score);
+
+        yield return null;
+    }
 
     public void HitsNormalGem() {
-        currentScore += 5;
+        currentScore += 51;
     }
 
     public void HitsSpecialGem() {
-        currentScore += 20;
+        currentScore += 444;
     }
 
     public void HitsCorrectFood() {
-        currentScore += 50;
+        currentScore += 5553;
         QList[currPos].SetActive(false);
         CList[currPos].SetActive(true);
         currPos += 1;
@@ -212,15 +226,17 @@ public class Timer : MonoBehaviour
     }
     
     public void HitsWrongFood() {
-        currentScore -= 10;
+        currentScore -= 2929;
     }
 
     public void CompletesList() {
-        currentScore += 100;
+        currentScore += 33337;
         if(lifePoint < 5) {
             lifePoint += 1;
         }
+        SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.FoodComplete);
         runCount += 1;
+
         currTime = startTime;
         currTimeMemory = startTimeMemory;
         foodList.SetActive(true);
@@ -243,6 +259,9 @@ public class Timer : MonoBehaviour
 
         DestroyFoodList();
         GenerateFoodList();
+
+            BGM.BGM_instance.GetComponent<BGM>().onRunCountUp(runCount);
+        
     }
 
     public void TimeOver() {
@@ -280,7 +299,7 @@ public class Timer : MonoBehaviour
     public void GenerateFoodList() {
         int newNumber;
         int i = 0;
-
+        player.GetComponent<Fox>().setInvulnerable((int)startTimeMemory);
         while(i < 5) {
             newNumber = Random.Range(1,11);
             if(!foodIntList.Contains(newNumber)) {

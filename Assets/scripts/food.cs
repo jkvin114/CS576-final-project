@@ -18,11 +18,11 @@ public class food : MonoBehaviour
         Vector3 pos = transform.position;
         if (up)
         {
-            pos.y += 0.05f * Time.deltaTime;
+            pos.y += 0.03f * Time.deltaTime;
         }
         else
         {
-            pos.y -= 0.05f * Time.deltaTime;
+            pos.y -= 0.03f * Time.deltaTime;
         }
         count++;
         if(count> 500)
@@ -30,7 +30,7 @@ public class food : MonoBehaviour
             up = !up;
             count= 0;
         }
-        transform.position = pos;
+       // transform.position = pos;
         Vector3 rot=transform.rotation.eulerAngles;
         rot.y += 50 *Time.deltaTime;
         transform.rotation=Quaternion.Euler(rot);

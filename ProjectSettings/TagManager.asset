@@ -12,6 +12,7 @@ TagManager:
   - key_food
   - wrong_food
   - prey
+  - obstacle_water
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - UI2
   - 
   - 
   - 

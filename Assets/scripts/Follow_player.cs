@@ -29,7 +29,7 @@ public class Follow_player : MonoBehaviour
         {
             shaking = false;
         }
-         transform.position = new Vector3(tf.position.x - 0.8f, 3 + y, 0.925f + z);
+         transform.position = new Vector3(tf.position.x - 0.8f, 3f + y, 0.925f + z);
         //transform.position = new Vector3(tf.position.x + 0.2f, 6 + y, 0.925f + z);
     }
     public void Shake()

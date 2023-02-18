@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public enum TerrainType
 {
@@ -12,32 +10,34 @@ public enum TerrainType
     FOREST = 2,
     MOUNTAIN = 3,
     ROCKY_MOUNTAIN = 4,
+    SNOWY=5,
+    DARK=6,
+    DESERT=7,
+    RIVER=8
 }
 
 public class Level : MonoBehaviour
 {
-    public GameObject plain_terrain;
-    public GameObject rocky_terrain;
-    public GameObject forest_terrain;
-    public GameObject mountain_terrain;
-    public GameObject rocky_mountain_terrain;
+    //public GameObject plain_terrain;
+   // public GameObject rocky_terrain;
+   // public GameObject forest_terrain;
+   // public GameObject mountain_terrain;
+   // public GameObject rocky_mountain_terrain;
     public GameObject foxPlayer;
     public GameObject chickenPlayer;
     public GameObject chickenPrey;
     public GameObject rabbitPrey;
+    public GameObject desertRabbitPrey;
 
 
-    public GameObject fence1;
-    public GameObject fence2;
 
     public GameObject tree;
     public GameObject bush;
-    private Level level;
 
     internal static int chunkLength = 6;
     
-    private int offset = 0;
     internal static float bottomY = 1.28f;
+    internal static float riverBottomY = 1.18f;
     internal static float rightBound = -0.1f;
     internal static float leftBound = 1.95f;
     internal static float terrainLeftBound = 3.8f;
@@ -49,6 +49,8 @@ public class Level : MonoBehaviour
     public GameObject[] terrains;
     public GameObject[] fences;
     public GameObject[] trees;
+    public GameObject[] snowy_trees;
+
     public GameObject[] colored_trees;
     public GameObject[] pine_trees;
     public GameObject[] bushes;
@@ -57,13 +59,17 @@ public class Level : MonoBehaviour
     public GameObject[] stumps;
     public GameObject[] flowers;
     public GameObject[] light_plants;
-
+    public GameObject[] tall_grass;
+    public GameObject[] desert_plants;
     public GameObject[] obstacles;
     public GameObject[] longObstacles;
+    public GameObject[] bridges;
+    public GameObject[] river_plants;
 
     private LinkedList<Chunk> chunks=new();
 
     internal static float laneWidth = 0.41f;
+    internal static float gridLength = 0.5f;
     internal static float[] laneCoordinates= new float[5] { 1.745f, 1.335f, 0.925f, 0.515f, 0.105f };
     internal float[] laneBounds = new float[6];
     private int numTerrains=0;
@@ -80,16 +86,25 @@ public class Level : MonoBehaviour
     public GameObject bear;
     public GameObject eagle;
     public GameObject fox;
+    public GameObject bee;
+    public GameObject bee_glowing;
 
     bool isGameStarted =false;
     float currentPlayerSpeed = 0;
-    public bool isChicken=false;
+    bool isChicken=false;
 
+    internal int stage = 1;
     List<GameObject> activePreys = new();
     List<int> keyFoods= new();
     internal int nextFood = 0;
     public Timer timer;
+    public GameObject light;
     bool canGenerateFood = true;
+    float turningLightOff = 0;
+    float turningLightOn = 0;
+    public bool randomBiome=false;
+
+    public static List<Vector3> beeDiffs = new List<Vector3>();
     // Start is called before the first frame update
     void Start()
     {
@@ -126,9 +141,13 @@ public class Level : MonoBehaviour
         //Instantiate(player, , );
         // terrains =new GameObject[5]{plain_terrain ,rocky_terrain, forest_terrain ,mountain_terrain,rocky_mountain_terrain};
         // fences = new GameObject[2] { fence1, fence2 };
-        StartCoroutine(createEmptyChunks());
+        StartCoroutine(createEmptyChunks(2));
 
-        
+        beeDiffs.Add(new Vector3(gridLength / 4, 0, laneWidth/4));
+        beeDiffs.Add(new Vector3(-gridLength / 4, 0, laneWidth / 4));
+        beeDiffs.Add(new Vector3(gridLength / 4, 0, -laneWidth / 4));
+        beeDiffs.Add(new Vector3(-gridLength / 4, 0, -laneWidth / 4));
+
         return;
        
     }
@@ -136,9 +155,8 @@ public class Level : MonoBehaviour
         StartCoroutine(func);
     }
 
-    public IEnumerator createEmptyChunks()
+    public IEnumerator createEmptyChunks(int count)
     {
-        int count = 2;
         for(int i=0;i<count; i++) {
             createChunk(true);
             yield return new WaitForSeconds(0.3f);
@@ -214,16 +232,16 @@ public class Level : MonoBehaviour
         Debug.Log(nextFood);
         if (nextFood == keyFoods.Count)
         {
-            StartCoroutine(spawnFood());
+            StartCoroutine(CompletesList());
             nextFood = 0;
         }
     }
-    IEnumerator spawnFood()
+    IEnumerator CompletesList()
     {
         canGenerateFood= false;
-        StartCoroutine(createEmptyChunks());
+        StartCoroutine(createEmptyChunks((int)foxPlayer.GetComponent<Fox>().running_velocity));
         yield return new WaitForSeconds(8.0f/foxPlayer.GetComponent<Fox>().running_velocity);
-        timer.CompletesList();
+        int runcount=timer.CompletesList();
         canGenerateFood = true;
 
         yield return null;
@@ -233,13 +251,36 @@ public class Level : MonoBehaviour
 
         nextFood = 0;
         this.keyFoods= keyFoods;
-        Debug.Log(keyFoods);
     }
     public void addPrey(GameObject p)
     {
         activePreys.Add(p);
     }
+    void turnLightOff()
+    {
+        turningLightOff = 1.3f;
 
+    }
+    void TurnLightOn()
+    {
+        light.GetComponent<Light>().enabled = true;
+        turningLightOn = 1.3f;
+    }
+    public void onRunCountUp(int count)
+    {
+        if(count==6)
+        {
+            foxPlayer.GetComponent<Fox>().increaseSpeedBy(0.6f);
+        }
+        if (count == 10)
+        {
+            turnLightOff();
+        }
+        if (count == 12)
+        {
+            TurnLightOn();
+        }
+    }
     public void createChunk(bool isEmpty)
     {
         Chunk lastChunk=null;
@@ -249,11 +290,27 @@ public class Level : MonoBehaviour
         }
         int biome = -1;
         int runs = timer.runCount;
-        if (runs == 0) biome = 0; //plains
-        if (runs == 1|| runs == 2) biome = 1; //forest or mountain
-        if (runs == 3 || runs == 4) biome = 2; //rock biomes
+        if (runs == 0) { 
+            biome = 0; //plains
+        }
+        if (runs == 1)
+        {
+            biome = 5; //desert
+        }
+        if (runs == 2|| runs == 3)
+        {
+            biome = 6; //river
+        }
+        if (runs == 5|| runs == 4)
+        {
+            biome = 1; //forest or mountain
+        }
+        if (runs == 7 || runs == 6) biome = 2; //rock biomes
+        if (runs == 8 || runs == 9) biome = 3; //snow biomes
+        if (runs == 11 || runs == 10) biome = 4; //dark biomes
 
-
+        if (randomBiome) biome = -1;
+      //  biome = 6;
         Chunk chunk = new(numTerrains,this,lastChunk, isEmpty,biome);
         chunk.generate(canGenerateFood&& numTerrains%4==3);//numTerrains%Random.Range(3,5)==2
         chunk.spawnEnemy(currentPlayerSpeed);
@@ -306,8 +363,32 @@ public class Level : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         checkCreateChunk();
         //                    GameObject house = Instantiate(house_prefab, new Vector3(0, 0, 0), Quaternion.identity);
         //house.AddComponent<BoxCollider>();
+        if (turningLightOff>0 && light.GetComponent<Light>().enabled)
+        {
+            turningLightOff -= Time.deltaTime;
+            Debug.Log(light.GetComponent<Light>().intensity);
+            light.GetComponent<Light>().intensity-= Time.deltaTime;
+            if (turningLightOff < 0)
+            {
+                light.GetComponent<Light>().intensity =0;
+                light.GetComponent<Light>().enabled = false;
+            }
+        }
+        else if (turningLightOn > 0)
+        {
+            
+            turningLightOn -= Time.deltaTime;
+            light.GetComponent<Light>().intensity =1.3f- turningLightOn;
+         //   Debug.Log(light.GetComponent<Light>().intensity);
+            if (turningLightOn < 0)
+            {
+                light.GetComponent<Light>().intensity = 1.3f;
+                
+            }
+        }
     }
 }

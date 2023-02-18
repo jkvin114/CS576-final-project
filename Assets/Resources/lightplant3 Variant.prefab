@@ -25,11 +25,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2213524442567372750, guid: 28971bf6a833e0f42aef9352d3ff694b, type: 3}
       propertyPath: m_Intensity
-      value: 0.3
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2874586834589542242, guid: 28971bf6a833e0f42aef9352d3ff694b, type: 3}
       propertyPath: m_Name
-      value: lightplant3
+      value: lightplant3 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 2874586834589907778, guid: 28971bf6a833e0f42aef9352d3ff694b, type: 3}
       propertyPath: m_RootOrder

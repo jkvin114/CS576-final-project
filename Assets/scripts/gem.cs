@@ -10,9 +10,11 @@ public class gem : MonoBehaviour
     private float obtainTime = 0.3f;
     private bool isObtained=false;
     Vector3 animDirection;
+    Fox player;
     void Start()
     {
-        animDirection=new Vector3(3,0,2.5f);
+        player = GameObject.Find("Fox").GetComponent<Fox>();
+        animDirection =new Vector3(3,0,2.5f);
     }
 
     // Update is called once per frame
@@ -51,6 +53,11 @@ public class gem : MonoBehaviour
         Vector3 rot=transform.rotation.eulerAngles;
         rot.y += 50 *Time.deltaTime;
         transform.rotation=Quaternion.Euler(rot);
+        if(player.magnetStrength > Vector3.Distance(transform.position, player.transform.position))
+        {
+            transform.position=Vector3.MoveTowards(transform.position,player.transform.position, Time.deltaTime*player.running_velocity*1.5f);
+
+        }
     }
     public void Obtain()
     {

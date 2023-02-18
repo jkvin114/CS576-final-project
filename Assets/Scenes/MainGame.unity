@@ -20,14 +20,14 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: 1.11
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
-  m_HaloStrength: 0.5
+  m_HaloStrength: 0.499
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
@@ -35,10 +35,10 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 1
+  m_ReflectionIntensity: 0.041
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.007391637, g: 0.009254278, b: 0.012583836, a: 0.041}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -285,6 +285,8 @@ MonoBehaviour:
   directionChangeDelay: 2
   food_particle: {fileID: 287097949191194737, guid: d5c957bd2644fbf41ac907cd83b449a7, type: 3}
   gem_particle: {fileID: 287097949191194737, guid: a3e15a08d9bde084681c6fa3dda44e1d, type: 3}
+  obstacle_particle: {fileID: 1047685826715660838, guid: f32ca28b4720fbb47aab48a52b4c6776, type: 3}
+  boost_particle: {fileID: 4610497295275054771, guid: b67029256d470b8428115fc5aa7a9bc6, type: 3}
   white_particle: {fileID: 4607390724541998900, guid: a9be964cf0ba89b488d7fa1e8f94ddc0, type: 3}
 --- !u!54 &23722894
 Rigidbody:
@@ -587,12 +589,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.248
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -632,14 +634,14 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1071750348}
-  - {fileID: 938181001}
   - {fileID: 900164158}
   - {fileID: 929503162}
   - {fileID: 622477186}
   - {fileID: 218176512}
   - {fileID: 1866087883}
-  - {fileID: 499239460}
   - {fileID: 972608153}
+  - {fileID: 938181001}
+  - {fileID: 499239460}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -735,7 +737,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 136127656}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -905,7 +907,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290022879}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 0.19785991, y: 0.6844409, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1125,7 +1127,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &327962610
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1143,7 +1145,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 34.679, y: 0}
+  m_AnchoredPosition: {x: 33.3, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &327962611
@@ -1510,7 +1512,7 @@ GameObject:
   - component: {fileID: 461019979}
   - component: {fileID: 461019978}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1528,7 +1530,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 1.3
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1537,7 +1539,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.496
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -1585,14 +1587,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 461019977}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.40821788, y: 0.23456976, z: -0.10938167, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 5, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: 30, z: 0}
 --- !u!1 &495926709
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,7 +1692,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &499239460
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1705,7 +1707,7 @@ RectTransform:
   m_Children:
   - {fileID: 300118053}
   m_Father: {fileID: 136127656}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1767,7 +1769,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &510728125
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2006,7 +2008,7 @@ RectTransform:
   m_Children:
   - {fileID: 1112314338}
   m_Father: {fileID: 136127656}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2081,7 +2083,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 680887017}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 0.19785991, y: 0.6844409, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2148,7 +2150,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &698649223
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2375,7 +2377,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &765642642
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2674,7 +2676,7 @@ RectTransform:
   m_Children:
   - {fileID: 1598728866}
   m_Father: {fileID: 136127656}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2751,7 +2753,7 @@ RectTransform:
   m_Children:
   - {fileID: 2118640159}
   m_Father: {fileID: 136127656}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2813,7 +2815,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &938181001
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2828,7 +2830,7 @@ RectTransform:
   m_Children:
   - {fileID: 1977471230}
   m_Father: {fileID: 136127656}
-  m_RootOrder: 1
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2905,7 +2907,7 @@ RectTransform:
   m_Children:
   - {fileID: 720363124}
   m_Father: {fileID: 136127656}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3264,7 +3266,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BGM2: {fileID: 8300000, guid: e63443c2d3ede61429742396a7d915e2, type: 3}
   BGM3: {fileID: 8300000, guid: e8a60251c9cfced45bc41f24158bf673, type: 3}
-  BGM4: {fileID: 8300000, guid: a9495818c8ceb81488d808e91a988207, type: 3}
+  BGM4: {fileID: 8300000, guid: 2efec2fe3b54a1345990da509331cb4d, type: 3}
+  BGM_SNOW: {fileID: 8300000, guid: 4c3815daaa30bab4e86f5f622b49ae2e, type: 3}
+  BGM_DARK: {fileID: 8300000, guid: 0b2045dd4122c9d459bf5f01b147cd8e, type: 3}
+  BGM_DESERT: {fileID: 8300000, guid: a26eaa41a2c6a734ab3bf76bf5077d29, type: 3}
+  BGM_PLAIN: {fileID: 8300000, guid: 46d3ef72bd6e82248bf59c913a582dc0, type: 3}
+  BGM_RIVER: {fileID: 8300000, guid: 7c083fb292345394dbf173d6c8aa3788, type: 3}
+  BGM_SPOOKY: {fileID: 8300000, guid: 8f6da82818e78724ab596519bddc58fa, type: 3}
 --- !u!1 &1041284286
 GameObject:
   m_ObjectHideFlags: 0
@@ -3665,7 +3673,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178879595}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 0.19785991, y: 0.6844409, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3674,7 +3682,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -33.1, y: 0}
+  m_AnchoredPosition: {x: -33.194992, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1178879597
@@ -3775,17 +3783,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d35a05273b875f42a12d76853242a6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plain_terrain: {fileID: 454666711495619773, guid: 219456e3221bcce488e6803e72f6eb92, type: 3}
-  rocky_terrain: {fileID: 7095275487392378886, guid: 36fb20aeb4f02ac4ca7ed23a1a76e728, type: 3}
-  forest_terrain: {fileID: 8387412153590627119, guid: 9ca3af66f8993014c987b0a5939eaa93, type: 3}
-  mountain_terrain: {fileID: 3118451832765359606, guid: f7b1955e5e48e0842af3d8da9edb7d21, type: 3}
-  rocky_mountain_terrain: {fileID: 8922772625820420966, guid: 5c05972a9089f8746aae3b28b6495066, type: 3}
   foxPlayer: {fileID: 23722888}
   chickenPlayer: {fileID: 808486549}
   chickenPrey: {fileID: 7566773731066471239, guid: b3e3a1022fcf4e34fa4afbbb3b7078e0, type: 3}
   rabbitPrey: {fileID: 867446623422273026, guid: 3d8655f899990e54a83ecdbccfafd70d, type: 3}
-  fence1: {fileID: 178996, guid: 4cc487e002327cb43995ca1871bd142e, type: 3}
-  fence2: {fileID: 134746, guid: d4f06407f06d8cf41b643015132cafca, type: 3}
+  desertRabbitPrey: {fileID: 3922420734680163554, guid: afe4e96c52a6bf7468203bf5784df22a, type: 3}
   tree: {fileID: 1335726306580732, guid: 23f312332b5cd5542ba196450880e89b, type: 3}
   bush: {fileID: 629542536758182806, guid: 7ca2fa2809968cf47852232e5d4a6e43, type: 3}
   terrains:
@@ -3794,6 +3796,10 @@ MonoBehaviour:
   - {fileID: 8387412153590627119, guid: 9ca3af66f8993014c987b0a5939eaa93, type: 3}
   - {fileID: 3118451832765359606, guid: f7b1955e5e48e0842af3d8da9edb7d21, type: 3}
   - {fileID: 8922772625820420966, guid: 5c05972a9089f8746aae3b28b6495066, type: 3}
+  - {fileID: 106643919407310415, guid: 0bb8ef7eaa94cfc4da37607f77233e2e, type: 3}
+  - {fileID: 8387412153590627119, guid: 9ca3af66f8993014c987b0a5939eaa93, type: 3}
+  - {fileID: 6671920925795505319, guid: cfd49e6a45c7ed743998d99643a0d8a5, type: 3}
+  - {fileID: 4409960206830648486, guid: cb762039a73e1f54ea2dad229f30de35, type: 3}
   fences:
   - {fileID: 178996, guid: 4cc487e002327cb43995ca1871bd142e, type: 3}
   - {fileID: 134746, guid: d4f06407f06d8cf41b643015132cafca, type: 3}
@@ -3801,11 +3807,18 @@ MonoBehaviour:
   - {fileID: 3163170946955520158, guid: 387f66ad181e92a48a858cf3a9e7df2f, type: 3}
   - {fileID: 7405846476849542632, guid: c6308cb7062fac34e8e50600086b12a1, type: 3}
   - {fileID: 6201417577865561771, guid: 936441e8ad7465e409c2285b778dfd8f, type: 3}
+  - {fileID: 1025681519537117646, guid: aa99a810914c5b84b9bc5d51f95dd05c, type: 3}
+  - {fileID: 487885705732334654, guid: 5172505cfbc25c644ad2ab70b9c6271a, type: 3}
   trees:
   - {fileID: 1250690161900600, guid: e6f343cc46467004f811ce2ba3a3841b, type: 3}
   - {fileID: 1335726306580732, guid: 23f312332b5cd5542ba196450880e89b, type: 3}
   - {fileID: 5142532879768883847, guid: 5983c8a04c0e73047a6c860b9cd9aaad, type: 3}
   - {fileID: 5023827496289606453, guid: a79279818571b6848a9ccb8dcb36dd2c, type: 3}
+  snowy_trees:
+  - {fileID: 5332555403919131016, guid: 53b42e3d20c00434e93198ff750c872b, type: 3}
+  - {fileID: 5659351929283011335, guid: a551e4197ae7c2c4ca0144253aa02828, type: 3}
+  - {fileID: 4273169489001463450, guid: b77349deee6ed7343a96697831452054, type: 3}
+  - {fileID: 5532667143784636804, guid: 4901a59201491854c8893f398c2d0c48, type: 3}
   colored_trees:
   - {fileID: 6625984507258901549, guid: ccebfc242bed46749a5dcef87dd83423, type: 3}
   - {fileID: 1311534305500079584, guid: 1850815f38acaab4085c2fb6a7ca2928, type: 3}
@@ -3842,6 +3855,15 @@ MonoBehaviour:
   - {fileID: 7869642184614088165, guid: 61051b4b110a32b4295bea7668800f7d, type: 3}
   - {fileID: 8163607892343602698, guid: 94bcbeefa0b9f554dbf45221ba63b63d, type: 3}
   - {fileID: 1006535399936984299, guid: 0087602eae9a88249ba205a2edcd630a, type: 3}
+  tall_grass:
+  - {fileID: 902912374606792013, guid: 8c1162e29ab5baf45ad76ebc6e86889b, type: 3}
+  - {fileID: 4204423420285107545, guid: c0c49c89c2d72a14892c9d4ad23f6dc1, type: 3}
+  - {fileID: 4353699184651255449, guid: 6ab95afc5b621784ca0606b0b15afde3, type: 3}
+  desert_plants:
+  - {fileID: 143784, guid: 5d8a4c5c2390fc54e96a652c3eeaf313, type: 3}
+  - {fileID: 110776, guid: 63ff2386a1262d64f99de6e3e1183874, type: 3}
+  - {fileID: 178436, guid: 587331bb58ede6149bd7d31473a36202, type: 3}
+  - {fileID: 163980, guid: 2fb6f5d47657319408dbd4f3e8412b4c, type: 3}
   obstacles:
   - {fileID: 5673873326271466509, guid: c25b5f30a6ffa6440a534cd1465ae591, type: 3}
   - {fileID: 4637891029610573863, guid: a088524e3ac215e46add366b687155d1, type: 3}
@@ -3863,6 +3885,22 @@ MonoBehaviour:
   - {fileID: 2707729966279118340, guid: d05e89863c3bcc7479e7ae1486f7772c, type: 3}
   - {fileID: 7089051189146085224, guid: 230eb2c829a7d6e4cb4ae0e5ca111a30, type: 3}
   - {fileID: 1520899659526320507, guid: a9eb1cbfcc63e32468bd1a3b67ea8466, type: 3}
+  - {fileID: 4273169489001463450, guid: b77349deee6ed7343a96697831452054, type: 3}
+  - {fileID: 9069975307115028571, guid: cffd4b082a36d0b45bfe1a951fa39f6e, type: 3}
+  - {fileID: 5332555403919131016, guid: 53b42e3d20c00434e93198ff750c872b, type: 3}
+  - {fileID: 2488627309698556767, guid: 168139873b1d5a248aecc1e43657acc9, type: 3}
+  - {fileID: 4847759105834542428, guid: 382d29b75a2340c499e6dbf195a04cb9, type: 3}
+  - {fileID: 6000282937374464703, guid: 10c48e76ab0b25940bf55f864b3e9e44, type: 3}
+  - {fileID: 2734492556679010130, guid: 969c3616aa58b784496ea44f7a79b463, type: 3}
+  - {fileID: 3805691901743004635, guid: e0f449a2b2c0d22418a5acaa21c9976f, type: 3}
+  - {fileID: 1535890958798083134, guid: c6989c9e0f9a64441a1e4560bc7d66e0, type: 3}
+  - {fileID: 3070690425353078423, guid: 8b0ff9e58ea2fe840a13e254347e5d43, type: 3}
+  - {fileID: 4188224929794914520, guid: f1965a00867a4a04ab919784cbddf18f, type: 3}
+  - {fileID: 2359570365305826270, guid: e69a7ff0182b8c248b8d280db8992d3a, type: 3}
+  - {fileID: 463614109722536370, guid: e5fe0ab7b694bd2488344b4dad2de5c1, type: 3}
+  - {fileID: 2338441896256561181, guid: 152e4d5407052dd488ed9c7bd6ba1aff, type: 3}
+  - {fileID: 3083162366260803093, guid: 50a504d6ab2739942b169bb80cc5aca0, type: 3}
+  - {fileID: 8133017875560415915, guid: ced9504d23bd24f418a71c32391c75e3, type: 3}
   longObstacles:
   - {fileID: 6771743561292806611, guid: 07b3ffe8eb369c146b2a86b5382253c9, type: 3}
   - {fileID: 7705022780426453064, guid: 886e5246f17f56442aff2f6e615ef830, type: 3}
@@ -3872,8 +3910,23 @@ MonoBehaviour:
   - {fileID: 35692006837748461, guid: e9204dcde9b133c4083a60b32a4c6287, type: 3}
   - {fileID: 375851789060448813, guid: 5e3231c1c2074074d8dd7e6d5ece627c, type: 3}
   - {fileID: 3506083639121636714, guid: 11a34ac4aca1aa94d9f061533bddb3dd, type: 3}
+  - {fileID: 247241858780218149, guid: abddfbeeea7392442b569ee0e303c4a2, type: 3}
+  - {fileID: 2970147464587084405, guid: 0ea181b308ed5de4288b7a1a0d9a46c2, type: 3}
+  bridges:
+  - {fileID: 5927378052616840224, guid: ca1d6e86db85b584dbc48ee16a1d9846, type: 3}
+  - {fileID: 8136773695427741979, guid: 48bdcd9e57470314b8f6dea0a5c43ce8, type: 3}
+  - {fileID: 1416385605391481328, guid: 26be3cb5a23eabf429ea4d6a0cfc0117, type: 3}
+  - {fileID: 1728245699924838592, guid: ad2acc4d1d933b54ea90e932d7b499f4, type: 3}
+  - {fileID: 853338939306395149, guid: 6ef2d32caef9e8f4499d54cbddaf3ad3, type: 3}
+  - {fileID: 375851789060448813, guid: 5e3231c1c2074074d8dd7e6d5ece627c, type: 3}
+  - {fileID: 35692006837748461, guid: e9204dcde9b133c4083a60b32a4c6287, type: 3}
+  river_plants:
+  - {fileID: 2198935450447942237, guid: e7c4ba5dd8811874caaf5422a65651c8, type: 3}
+  - {fileID: 2424906648748805569, guid: 6138c08c8711f30498a74a2acb1178d9, type: 3}
+  - {fileID: 4486925941226210411, guid: 3f90826f427f81547a062dedc32aac6b, type: 3}
+  - {fileID: 4486925941226210411, guid: 87fd1a94c53c00f4694e25d00e53dd8d, type: 3}
   difficulty: 0
-  difficultyIncreaseFrequency: 7
+  difficultyIncreaseFrequency: 6
   gem1: {fileID: 8711430376782347642, guid: 9f8c191ca4eb0d849bbf2fd15b570adf, type: 3}
   gem2: {fileID: 8168887881479703389, guid: f74fce18830e928408ee515e0059ec52, type: 3}
   gem3: {fileID: 6876439152349069732, guid: ac532ea120130d24f876ac6e7a9f4ea4, type: 3}
@@ -3882,8 +3935,11 @@ MonoBehaviour:
   bear: {fileID: 7989757930120960154, guid: cdb59d1a4ed92ee4b81cdec82caa1748, type: 3}
   eagle: {fileID: 3665278347198440714, guid: 3caf64a946eca364f827aa9c221cb671, type: 3}
   fox: {fileID: 23722888}
-  isChicken: 0
+  bee: {fileID: 7702070502955055411, guid: 67f26c361dcac7241acfd9853add1484, type: 3}
+  bee_glowing: {fileID: 9125923321818729131, guid: 4dc0ccddcc0985a4c8074b19d3ca2e6e, type: 3}
   timer: {fileID: 825942729}
+  light: {fileID: 461019977}
+  randomBiome: 0
 --- !u!4 &1198145008
 Transform:
   m_ObjectHideFlags: 0
@@ -3945,6 +4001,9 @@ MonoBehaviour:
   FoxHit: {fileID: 8300000, guid: 672dcf64caaf3ec4d8a73b667c90b259, type: 3}
   Gameover: {fileID: 8300000, guid: eeff5276cb5cbb1469a828f7a82d3814, type: 3}
   Score: {fileID: 8300000, guid: 701cbaa86e497ca4bb8715fad9bbf859, type: 3}
+  Destroy: {fileID: 8300000, guid: 2187199eec04fd547ad1fefb44771927, type: 3}
+  Bee: {fileID: 8300000, guid: d90883779ce55ba41ad1b4d74789b5e9, type: 3}
+  Splash: {fileID: 8300000, guid: f942f09021f4b36429833e1601e61bc8, type: 3}
   FoodComplete: {fileID: 8300000, guid: a1d6b744e2b726d429273040412ec776, type: 3}
 --- !u!82 &1271997788
 AudioSource:
@@ -4499,7 +4558,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 63.3
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -4969,7 +5028,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1850747902}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 0.19785991, y: 0.6844409, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5050,7 +5109,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 136127656}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5631,7 +5690,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1998530664
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5716,7 +5775,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2038815734}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 0.19785991, y: 0.6844409, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

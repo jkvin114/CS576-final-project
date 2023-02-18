@@ -71,10 +71,12 @@ public class Timer : MonoBehaviour
 
     public GameObject player;
     bool alive = true;
+    bool foodHidden=false;
+    int foodCount = 5;
     // Start is called before the first frame update
     void Start()
     {
-        BGM.BGM_instance.GetComponent<AudioSource>().Play();
+        
 
         foodPrefabList.Add(food01);
         foodPrefabList.Add(food02);
@@ -107,13 +109,22 @@ public class Timer : MonoBehaviour
         lifePoint = 5;
 
         GenerateFoodList();
+        BGM.BGM_instance.onStart();
 
-        Directory.CreateDirectory(Application.streamingAssetsPath + "/InputLogs");
+      //  Directory.CreateDirectory(Application.streamingAssetsPath + "/InputLogs");
+    }
+    void onFoodListHide()
+    {
+
+        BGM.BGM_instance.GetComponent<BGM>().onRunCountUp(runCount);
+        level.onRunCountUp(runCount);
+        foodHidden= true;
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (!alive) return;
         currTime -= 1 * Time.deltaTime;
         currTimeMemory -= 1 * Time.deltaTime;
@@ -128,10 +139,11 @@ public class Timer : MonoBehaviour
             
             if (currTimeMemory <= 0)
             {
-                foodList.SetActive(false);
+               // foodList.SetActive(false);
                 tracker.SetActive(true);
                 counterTextMemory.enabled = false;
                 disappearText.enabled = false;
+                if(!foodHidden) { onFoodListHide(); }
             }
 
             if (lifePoint == 5)
@@ -219,18 +231,18 @@ public class Timer : MonoBehaviour
 
     public void HitsCorrectFood() {
         currentScore += 5553;
-        QList[currPos].SetActive(false);
+     //   QList[currPos].SetActive(false);
         CList[currPos].SetActive(true);
         currPos += 1;
         level.onGetRightFood();
     }
     
     public void HitsWrongFood() {
-        currentScore -= 2929;
+        currentScore -= 8887;
     }
 
-    public void CompletesList() {
-        currentScore += 33337;
+    public int CompletesList() {
+        currentScore += 100000;
         if(lifePoint < 5) {
             lifePoint += 1;
         }
@@ -246,11 +258,11 @@ public class Timer : MonoBehaviour
         totalScore += currentScore;
         currentScore = 0;
         currPos = 0;
-        Q1.SetActive(true);
-        Q2.SetActive(true);
-        Q3.SetActive(true);
-        Q4.SetActive(true);
-        Q5.SetActive(true);
+       // Q1.SetActive(true);
+       // Q2.SetActive(true);
+       // Q3.SetActive(true);
+      //  Q4.SetActive(true);
+      //  Q5.SetActive(true);
         C1.SetActive(false);
         C2.SetActive(false);
         C3.SetActive(false);
@@ -260,8 +272,7 @@ public class Timer : MonoBehaviour
         DestroyFoodList();
         GenerateFoodList();
 
-            BGM.BGM_instance.GetComponent<BGM>().onRunCountUp(runCount);
-        
+        return runCount;
     }
 
     public void TimeOver() {
@@ -277,11 +288,11 @@ public class Timer : MonoBehaviour
         totalScore += currentScore;
         currentScore = 0;
         currPos = 0;
-        Q1.SetActive(true);
-        Q2.SetActive(true);
-        Q3.SetActive(true);
-        Q4.SetActive(true);
-        Q5.SetActive(true);
+       // Q1.SetActive(true);
+       // Q2.SetActive(true);
+       // Q3.SetActive(true);
+       // Q4.SetActive(true);
+       // Q5.SetActive(true);
         C1.SetActive(false);
         C2.SetActive(false);
         C3.SetActive(false);
@@ -310,6 +321,7 @@ public class Timer : MonoBehaviour
         for(int j = 0; j < 5; j++) {
             SpawnFood(j, foodIntList[j]);
         }
+        foodHidden= false;
         level.onSpawnFood(foodIntList);
     }
 
@@ -320,55 +332,42 @@ public class Timer : MonoBehaviour
     }
 
     public void SpawnFood(int pos, int numFood) {
-        if(numFood == 1) {
-            GameObject newFood = Instantiate(Apple, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+        GameObject newFood;
+        if (numFood == 1) {
+            newFood = Instantiate(Apple, foodPrefabList[pos]);
         }
         else if(numFood == 2) {
-            GameObject newFood = Instantiate(Banana, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+             newFood = Instantiate(Banana, foodPrefabList[pos]);
         }
         else if(numFood == 3) {
-            GameObject newFood = Instantiate(Candy, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+             newFood = Instantiate(Candy, foodPrefabList[pos]);
         }
         else if(numFood == 4) {
-            GameObject newFood = Instantiate(Garlic, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+             newFood = Instantiate(Garlic, foodPrefabList[pos]);
         }
         else if(numFood == 5) {
-            GameObject newFood = Instantiate(Hamburger, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+             newFood = Instantiate(Hamburger, foodPrefabList[pos]);
         }
         else if(numFood == 6) {
-            GameObject newFood = Instantiate(Mushroom, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+            newFood = Instantiate(Mushroom, foodPrefabList[pos]);
         }
         else if(numFood == 7) {
-            GameObject newFood = Instantiate(Lemon, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+            newFood = Instantiate(Lemon, foodPrefabList[pos]);
         }
         else if(numFood == 8) {
-            GameObject newFood = Instantiate(Pumpkin, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+            newFood = Instantiate(Pumpkin, foodPrefabList[pos]);
         }
         else if(numFood == 9) {
-            GameObject newFood = Instantiate(Waffle, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+            newFood = Instantiate(Waffle, foodPrefabList[pos]);
         }
         else if(numFood == 10) {
-            GameObject newFood = Instantiate(Watermelon, foodPrefabList[pos]) as GameObject;
-            newFood.transform.localScale = new Vector3(250, 250, 1);
-            newFood.gameObject.layer = 5;
+            newFood = Instantiate(Watermelon, foodPrefabList[pos]);
         }
+        else
+        {
+            newFood = Instantiate(Apple, foodPrefabList[pos]);
+        }
+        newFood.transform.localScale = new Vector3(250, 250, 1);
+        newFood.gameObject.layer = 5;
     }
 }

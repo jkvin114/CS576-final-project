@@ -16,7 +16,6 @@ public class RabbitPrey : Prey
         player = GameObject.Find("Fox");
         reactionDistance = Random.Range(4, 7);
         if(Random.Range(0,10)== 0 ) reactionDistance=0.6f;
-        Debug.Log(player);
     }
 
     protected override void setAnimatorSpeed(float speed)

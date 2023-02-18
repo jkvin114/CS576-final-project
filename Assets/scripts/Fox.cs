@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
 using static UnityEngine.ParticleSystem;
 public class Fox : MonoBehaviour
 {
@@ -25,11 +22,27 @@ public class Fox : MonoBehaviour
     private float invulTime = 0;
     public GameObject food_particle;
     public GameObject gem_particle;
+    public GameObject obstacle_particle;
+    public GameObject boost_particle;
+
     public GameObject white_particle;
     int inputBuffer = 0;
     bool alive = true;
+    internal float magnetStrength=0.6f;
+    internal bool powered = false;
+    internal bool boosted=false;
+    private float width;
+    private float height;
+
+    private void Awake()
+    {
+        //Screen.orientation = ScreenOrientation.LandscapeLeft;
+
+    }
+    //GameObject boostParticle;
     void Start()
     {
+        //BGM.BGM_instance.GetComponent<AudioSource>().Play();
         animation_controller = GetComponent<Animator>();
         movement_direction = new Vector3(0.0f, 0.0f, 0.0f);
         side_velocity = 0.5f;
@@ -37,19 +50,40 @@ public class Fox : MonoBehaviour
         lane = 2;
         animation_controller.SetTrigger("Run");
         animation_controller.speed = running_velocity*1.3f;
+        //transform.localScale= Vector3.one*0.4f;
+        //GetComponent<BoxCollider>().size = new Vector3(2.5f, 0.8f, 2.5f);
+        // boostParticle = Instantiate(boost_particle, transform.position, Quaternion.identity);
+
+        width = (float)Screen.width;
+        height = (float)Screen.height;
+        // boostParticle.transform.parent = transform;
+        // boostParticle.GetComponent<ParticleSystem>().Play();
+
 
     }
     public float increaseSpeed()
     {
-        if(running_velocity<=3.5f)
-            running_velocity += 0.15f;
-        else
-            running_velocity += 0.07f;
+      //  return running_velocity;
+        //  boostParticle.GetComponent<ParticleSystem>().Stop();
+        if (running_velocity <= 2.5f)
+            running_velocity += 0.3f;
+        else if (running_velocity <= 4)
+            running_velocity += 0.025f;
+        else if(running_velocity<=6)
+            running_velocity += 0.014f;
 
         animation_controller.speed = running_velocity;
 
         UIController.GetComponent<Timer>().startTime = 300.0f / running_velocity;
         return running_velocity;    
+    }
+    public void increaseSpeedBy(float inc)
+    {
+        running_velocity += inc;
+
+        animation_controller.speed = running_velocity;
+
+        UIController.GetComponent<Timer>().startTime = 300.0f / running_velocity;
     }
     IEnumerator Shake(float duration, float magnitude)
     {
@@ -88,18 +122,37 @@ public class Fox : MonoBehaviour
     }
     void collideObject(Collider other)
     {
-        if (other.gameObject.CompareTag("obstacle") && !isInvulnerable)
+        if ((other.gameObject.CompareTag("obstacle") || other.gameObject.CompareTag("obstacle_water")) && !isInvulnerable)
         {
-            other.gameObject.tag = "Untagged";
+            if (powered || boosted)
+            {
+                Vector3 pos = transform.position;
+                pos.x = transform.position.x + 0.4f;
+                GameObject particle = Instantiate(obstacle_particle, pos, Quaternion.identity);
 
-            //   Debug.Log("obstacle");
-            //return;
-            setInvulnerable(3);
-            StartCoroutine(Shake(0.15f, 0.1f));
-            UIController.GetComponent<Timer>().HitsObstacle();
-            MainCamera.GetComponent<Follow_player>().Shake();
-            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Hit);
-            SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.FoxHit);
+                particle.transform.parent = other.transform.parent;
+             //   particle.transform.localScale = new Vector3(0.00003f, 0.00003f, 0.00003f);
+                particle.GetComponent<ParticleSystem>().Play();
+                SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Destroy);
+
+                Destroy(other.gameObject);
+            }
+            else
+            {
+                if (other.gameObject.CompareTag("obstacle_water")){
+                    SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Splash);
+                }
+                other.gameObject.tag = "Untagged";
+
+                //   Debug.Log("obstacle");
+                //return;
+                setInvulnerable(3);
+                StartCoroutine(Shake(0.15f, 0.1f));
+                UIController.GetComponent<Timer>().HitsObstacle();
+                MainCamera.GetComponent<Follow_player>().Shake();
+                SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Hit);
+                SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.FoxHit);
+            }
 
         }
         if (other.gameObject.CompareTag("gem"))
@@ -145,6 +198,7 @@ public class Fox : MonoBehaviour
 
             particle.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             particle.GetComponent<ParticleSystem>().Play();
+            particle.transform.parent=other.transform.parent;
             SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.RightFood);
 
         }
@@ -195,7 +249,23 @@ public class Fox : MonoBehaviour
         }
         bool going_left = Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A);
         bool going_right = Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D);
-        float laneOffset = 0;
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                Vector2 pos = touch.position;
+                if (pos.x < width / 2)
+                {
+                    going_left= true;
+                }
+                else
+                {
+                    going_right = true;
+                }
+            }
+        }
+         float laneOffset = 0;
         if (directionChangeBlockingTime <0)
         {
             currentDirection = Direction.FORWARD;
@@ -241,7 +311,7 @@ public class Fox : MonoBehaviour
             }
         }
 
-        transform.position=new Vector3(transform.position.x+running_velocity*Time.deltaTime,
+        transform.position=new Vector3(transform.position.x+running_velocity*Time.deltaTime * (boosted?2:1),
         Level.bottomY + (Mathf.Sin(Time.time * 30*running_velocity)+1)/50.0f, Level.laneCoordinates[lane]+ laneOffset);
             
 

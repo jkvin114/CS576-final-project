@@ -22,6 +22,9 @@ public class SFXManager : MonoBehaviour
     public AudioClip FoxHit;
     public AudioClip Gameover;
     public AudioClip Score;
+    public AudioClip Destroy;
+    public AudioClip Bee;
+    public AudioClip Splash;
 
     public AudioClip FoodComplete;
 

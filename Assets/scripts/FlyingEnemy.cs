@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class FlyingEnemy : MonoBehaviour
@@ -51,7 +50,7 @@ public class FlyingEnemy : MonoBehaviour
             shouldLeave = true;
             isDescending=false;
         }
-        if(shouldLeave && timeElapsed > timeSpan * 1.7)
+        if(shouldLeave && timeElapsed > timeSpan * 2)
         {
             transform.position+= leavingDirection *Time.deltaTime;
         }

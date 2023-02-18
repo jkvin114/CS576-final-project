@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 454666711495619773, guid: 219456e3221bcce488e6803e72f6eb92, type: 3}
       propertyPath: m_Name
-      value: forest_terrain_1
+      value: forest_terrain_1 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 1074624031453384730, guid: 219456e3221bcce488e6803e72f6eb92, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -39,6 +39,14 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 49da8e6e90754214f86c4ccb55d12cde, type: 2}
+    - target: {fileID: 7618275534758786972, guid: 219456e3221bcce488e6803e72f6eb92, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 6.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7618275534758786972, guid: 219456e3221bcce488e6803e72f6eb92, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.76
+      objectReference: {fileID: 0}
     - target: {fileID: 8430068154715216084, guid: 219456e3221bcce488e6803e72f6eb92, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -49,7 +57,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8993259373179931843, guid: 219456e3221bcce488e6803e72f6eb92, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 49.06498
+      value: 47.84
       objectReference: {fileID: 0}
     - target: {fileID: 8993259373179931843, guid: 219456e3221bcce488e6803e72f6eb92, type: 3}
       propertyPath: m_LocalPosition.y

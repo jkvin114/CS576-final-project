@@ -56,7 +56,7 @@ public class Prey : MonoBehaviour
     }
     public void init(List<GridInit[]> newChunk, int endLane, int chunkPos, int x, int z)
     {
-        speedMultiplier = Random.Range(0.75f, 0.95f);
+        speedMultiplier = Random.Range(0.75f, 0.9f);
         posX = x;
         posZ = z;
         //  map.AddRange(newChunk);
@@ -167,7 +167,7 @@ public class Prey : MonoBehaviour
     }
     float getXCoord(int x)
     {
-        return (chunkOffset * Level.chunkLength + (((float)x - 0.5f) / 12.0f) * Level.chunkLength);
+        return (chunkOffset * Level.chunkLength + +0.5f * x + 0.25f - 2.25f);
     }
     private List<GridNode> findPath(int x, int z, List<GridInit[]> newChunk, List<int> endLanes,bool obstacleAllowed)
     {

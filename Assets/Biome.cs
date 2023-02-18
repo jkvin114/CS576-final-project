@@ -17,6 +17,10 @@ public abstract class Biome
     internal int[] longObstacles_3 = new int[3];
 
     internal int[] fixedObstacle = new int[6];
+    internal float longObstacleChance = 0.5f;
+    internal bool generateBear=true;
+    internal bool generateEagle = true;
+    internal float beeFrequency = 0.2f;
     protected Biome(TerrainType type, Level level,Chunk chunk)
     {
         
@@ -29,7 +33,7 @@ public abstract class Biome
     private static TerrainType selectBiome(int pos,int type)
     {
      //   return TerrainType.ROCKY_MOUNTAIN;
-        float noise = Mathf.PerlinNoise((pos + Level.biomeSeed)/20, 0);
+        float noise = Mathf.PerlinNoise((pos + Level.biomeSeed)/15, 0); 
         if (type == 0) return TerrainType.PLAIN;
         if (type == 1)
         {
@@ -53,27 +57,45 @@ public abstract class Biome
                 return TerrainType.ROCKY_MOUNTAIN;
             }
         }
+        if (type == 3) return TerrainType.SNOWY;
+        if (type == 4) return TerrainType.DARK;
+        if (type == 5) return TerrainType.DESERT;
+        if (type == 6) return TerrainType.RIVER;
 
-        if (noise < 0.3)
+        TerrainType biome;
+        if (noise< 0.27)
         {
-            return TerrainType.MOUNTAIN;
+            biome= TerrainType.SNOWY;
+        }
+        else if (noise < 0.35)
+        {
+            biome = TerrainType.MOUNTAIN;
         }
         else if (noise < 0.4)
         {
-            return TerrainType.ROCKY_MOUNTAIN;
+            biome = TerrainType.ROCKY_MOUNTAIN;
         }
-        else if (noise < 0.44)
+        else if (noise < 0.45)
         {
-            return TerrainType.ROCKY;
+            biome = TerrainType.ROCKY;
         }
-        else if (noise < 0.63)
+        else if (noise < 0.55)
         {
-            return TerrainType.FOREST;
+            biome = TerrainType.FOREST;
+        }
+        else if (noise < 0.7)
+        {
+            biome = TerrainType.PLAIN;
         }
         else
         {
-            return TerrainType.PLAIN;
+            biome = TerrainType.DESERT;
         }
+
+        if(biome!= TerrainType.DESERT && biome!= TerrainType.SNOWY && Random.Range(0,9)==0)
+            biome= TerrainType.RIVER;
+        return biome;
+
     }
 
     public static Biome GetBiome(int pos,Level level, Chunk chunk,int biome)
@@ -85,16 +107,25 @@ public abstract class Biome
 
         switch (b)
         {
-                case TerrainType.PLAIN:
+            case TerrainType.PLAIN:
                 return new PlainBiome(b,level, chunk);
-                case TerrainType.ROCKY:
+            case TerrainType.ROCKY:
                 return new RockBiome(b,level, chunk);
-                case TerrainType.FOREST: 
+            case TerrainType.FOREST: 
                 return new ForestBiome(b,level, chunk);
             case TerrainType.MOUNTAIN:
                 return new MountainBiome(b, level, chunk);
             case TerrainType.ROCKY_MOUNTAIN:
                 return new RockyMountainBiome(b, level, chunk);
+            case TerrainType.SNOWY:
+                return new SnowyBiome(b, level, chunk);
+            case TerrainType.DARK:
+                return new DarkBiome(b, level, chunk);
+            case TerrainType.DESERT:
+                return new DesertBiome(b, level, chunk);
+            case TerrainType.RIVER:
+                if(chunk.isEmpty) return new PlainBiome(TerrainType.PLAIN, level, chunk);
+                return new RiverBiome(b, level, chunk);
         }
         return new PlainBiome(b, level, chunk);
     }
@@ -130,6 +161,14 @@ public abstract class Biome
         if (length == 2) return longObstacles_2[Random.Range(0, longObstacles_2.Length)];
         else return longObstacles_3[Random.Range(0, longObstacles_3.Length)];
 
+    }
+    public virtual int getBridge(int length)
+    {
+        return -1;
+    }
+    public virtual GameObject getInlaneDecoration()
+    {
+        return null;
     }
     public virtual void populate()
     {
@@ -185,6 +224,7 @@ public abstract class Biome
     }
     public virtual void addFence(float startPos)
     {
+        if (type == TerrainType.RIVER) return;
 
         float fencePos = startPos - 2;
         while (fencePos < startPos + Level.chunkLength / 2)
@@ -203,17 +243,24 @@ public abstract class Biome
 
 class PlainBiome : Biome
 {
+    int flowerCount;
     public PlainBiome(TerrainType type, Level level, Chunk chunk): base(type, level,chunk)
     {
         obstaclePool = new int[] { 0, 0, 0, 1, 1, 1, 5, 6, 7, 12, 14,18,18 };
-        longObstacles_2 = new int[3] {0,1,2 };
+        longObstacles_2 = new int[4] {0,1,2,9 };
         longObstacles_3 = new int[3] {4,5,6};
         fixedObstacle=new int[6] { 0,5,0,2,4,5};
+        flowerCount = Random.Range(0, 6) * 7;
+        if (flowerCount > 25)
+        {
+            beeFrequency = 0.6f;
+        }
+        else beeFrequency = 0.3f ;
     }
 
     public override void populate()
     {
-        int flowerCount = Random.Range(0, 6) * 7;
+        
         for (int i = 0; i < 4; i++)
         {
             spawnFeatures(level.bushes[i], chunkpos, 20, GRASS_SCALE);
@@ -239,6 +286,7 @@ class RockBiome : Biome
         longObstacles_2 = new int[] { 2,3,3 };
         longObstacles_3 = new int[] { 6,7,7 };
         fixedObstacle = new int[6] {12,11, 2,3,6,7 };
+        beeFrequency = 0.0f;
     }
 
 
@@ -270,19 +318,24 @@ class ForestBiome : Biome
 {
     public ForestBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
     {
-        longObstacles_2 = new int[3] { 0, 1, 2 };
+        longObstacles_2 = new int[4] { 0, 1, 2,9 };
         longObstacles_3 = new int[3] { 4, 5, 6 };
         fixedObstacle = new int[6] { 2,4, 0, 2, 5,6 };
         //pine trees
         if (chunk.decorationNoise > 0.40f && chunk.decorationNoise < 0.60f)
         {
-
+            beeFrequency = 0.1f;
             obstaclePool = new int[] {0,1,3,3,3,4,4,4,5, 6,12,14, 18, 18 };
         }
         else //normal trees
         {
             obstaclePool = new int[] { 0, 1, 2,2,2,2, 5, 6, 12, 14, 18, 18 };
+            if (chunk.decorationNoise >= 0.60f)
+            {
+                beeFrequency = 0.3f;
+            }
         }
+        
     }
 
     protected override GameObject getFenceObject()
@@ -327,7 +380,7 @@ class MountainBiome : Biome
         //pine trees
         if (chunk.decorationNoise > 0.5f)
         {
-
+            beeFrequency = 0.1f;
             obstaclePool = new int[] { 0, 0, 1, 1, 3, 3, 3, 4, 4, 4, 5, 6, 7, 9, 10, 12, 14 };
         }
         else //normal trees
@@ -373,6 +426,7 @@ class RockyMountainBiome : Biome
         {
             obstaclePool = new int[] { 11, 12, 14, 15, 9,10,11,9,10, 11, 9,10, 11, 5, 6, 7, 9, 10, 11 };
         }
+        beeFrequency = 0.0f;
     }
 
 
@@ -395,3 +449,144 @@ class RockyMountainBiome : Biome
     }
 }
 
+
+class SnowyBiome : Biome
+{
+    public SnowyBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
+    {
+        longObstacles_2 = new int[4] { 0, 3, 8,8 };
+        longObstacles_3 = new int[2] { 6,7};
+        fixedObstacle = new int[6] { 4, 6, 0, 2, 4, 5 };
+        if (chunk.decorationNoise > 0.5f)
+        {
+            obstaclePool = new int[] { 21, 21, 12, 14, 22, 22, 22, 10, 21 ,22,21};
+        }
+        else
+        {
+            obstaclePool = new int[] { 11,11, 12, 14, 20,  20,  20, 10, 11,11,20 };//only dead trees
+        }
+            
+        longObstacleChance = 0.3f;
+        beeFrequency = 0.0f;
+    }
+
+
+    public override void populate()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (chunk.decorationNoise > 0.5f)
+            {
+                spawnFeatures(level.snowy_trees[Random.Range(0, 2)], chunkpos, Random.Range(10, 15), TREE_SCALE);
+
+            }
+            else
+            {
+                spawnFeatures(level.snowy_trees[Random.Range(2, 4)], chunkpos, Random.Range(10, 15), TREE_SCALE);
+
+            }
+        }
+        spawnFeatures(level.dead_plants[4], chunkpos, 20, GRASS_SCALE);
+    }
+}
+class DarkBiome : Biome
+{
+    public DarkBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
+    {
+        longObstacles_2 = new int[2] { 2, 1 };
+        longObstacles_3 = new int[2] {5,4};
+        fixedObstacle = new int[6] { 4, 6, 0, 2, 4, 5 };
+        if (chunk.decorationNoise > 0.5f)
+        {
+            obstaclePool = new int[] { 23, 24, 30, 30, 31, 31, 31, 31, 29, 29, 24, 30, 31, 29, 29,32,33,34, 5, 7, 6 };
+        }
+        else //more mushroom
+        {
+            obstaclePool = new int[] {30,  29,  31, 32, 33, 34, 32, 33, 34, 32, 33, 34, 5, 7, 7,6 };
+        }
+
+        longObstacleChance = 0.1f;
+        generateBear = false;
+        generateEagle=false;
+    }
+
+    public override void populate()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            spawnFeatures(level.tall_grass[i], chunkpos, 5, GRASS_SCALE + 0.3f);
+        }
+        //spawnFeatures(level.light_plants[0], chunkpos, 7, GRASS_SCALE);
+        for(int i = 0; i < 2; i++)
+        {
+            spawnFeatures(level.light_plants[i+1], chunkpos, 15, GRASS_SCALE);
+        }
+    }
+}
+class DesertBiome : Biome
+{
+    public DesertBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
+    {
+        fixedObstacle = new int[6] { 4, 6, 0, 2, 4, 5 };
+        obstaclePool = new int[] { 25,26,27,28,9,10,26,26,26,26,26,27,27};
+        longObstacleChance = 0.0f;
+        generateBear= false;
+        beeFrequency= 0.0f;
+    }
+
+    protected override GameObject getFenceObject()
+    {
+        return level.fences[Random.Range(6, 8)];
+    }
+    public override void populate()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            spawnFeatures(level.desert_plants[i], chunkpos, 15, TREE_SCALE);
+        }
+        spawnFeatures(level.desert_plants[3], chunkpos, 5, TREE_SCALE);
+    }
+}
+class RiverBiome : Biome
+{
+    public RiverBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
+    {
+        fixedObstacle = new int[6] { 4, 6, 0, 2, 4, 5 };
+        obstaclePool = new int[] {35 };
+        longObstacleChance = 0.0f;
+        generateBear = false;
+        generateEagle=false;
+        beeFrequency = 0.4f;
+    }
+
+    public override void populate()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            spawnFeatures(level.trees[0], chunkpos, Random.Range(1, 4), TREE_SCALE);
+        }
+    
+        spawnFeatures(level.bushes[0], chunkpos, 20, GRASS_SCALE);
+    }
+    public override int getBridge(int length)
+    {
+        if (length == 1)
+        {
+            return Random.Range(0, 3);
+        }
+        if (length == 2)
+        {
+            return Random.Range(0, 5) == 0 ? 4 : 3;
+        }
+        return 5;
+    }
+    public override GameObject getInlaneDecoration()
+    {
+        int rand = Random.Range(0, 15);
+        if (rand == 0) return level.river_plants[3];
+        else if (rand <=2) return level.river_plants[2];
+        else if (rand <=5) return level.river_plants[1];
+        else if (rand <=8) return level.river_plants[0];
+        return null;
+    }
+}

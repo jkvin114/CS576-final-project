@@ -12,6 +12,8 @@ public class Fox : MonoBehaviour
     private Animator animation_controller;
     public GameObject UIController;
     public GameObject MainCamera;
+    public GameObject MainCameraMobile;
+    public bool mobile=false;
     private float velocity;
     private int lane;
     private float directionChangeBlockingTime = 0;
@@ -33,7 +35,7 @@ public class Fox : MonoBehaviour
     internal bool boosted=false;
     private float width;
     private float height;
-
+    GameObject maincamera;
     private void Awake()
     {
         //Screen.orientation = ScreenOrientation.LandscapeLeft;
@@ -42,6 +44,15 @@ public class Fox : MonoBehaviour
     //GameObject boostParticle;
     void Start()
     {
+        if(mobile)
+        {
+            maincamera = MainCameraMobile;
+        }
+        else
+        {
+            maincamera= MainCamera;
+        }
+        maincamera.SetActive(true);
         //BGM.BGM_instance.GetComponent<AudioSource>().Play();
         animation_controller = GetComponent<Animator>();
         movement_direction = new Vector3(0.0f, 0.0f, 0.0f);
@@ -65,7 +76,7 @@ public class Fox : MonoBehaviour
     {
       //  return running_velocity;
         //  boostParticle.GetComponent<ParticleSystem>().Stop();
-        if (running_velocity <= 2.5f)
+        if (running_velocity <= 2.7)
             running_velocity += 0.3f;
         else if (running_velocity <= 4)
             running_velocity += 0.025f;
@@ -149,7 +160,7 @@ public class Fox : MonoBehaviour
                 setInvulnerable(3);
                 StartCoroutine(Shake(0.15f, 0.1f));
                 UIController.GetComponent<Timer>().HitsObstacle();
-                MainCamera.GetComponent<Follow_player>().Shake();
+                maincamera.GetComponent<Follow_player>().Shake();
                 SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.Hit);
                 SFXManager.sfx_instance.Audio.PlayOneShot(SFXManager.sfx_instance.FoxHit);
             }
@@ -238,7 +249,7 @@ public class Fox : MonoBehaviour
     void Update()
     {
         if (!alive) return;
-        MainCamera.GetComponent<Follow_player>().Follow(transform);
+        maincamera.GetComponent<Follow_player>().Follow(transform);
         invulTime -= Time.deltaTime;
         if (invulTime < 0 && isInvulnerable)
         {

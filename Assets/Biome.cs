@@ -33,7 +33,7 @@ public abstract class Biome
     private static TerrainType selectBiome(int pos,int type)
     {
      //   return TerrainType.ROCKY_MOUNTAIN;
-        float noise = Mathf.PerlinNoise((pos + Level.biomeSeed)/15, 0); 
+        float noise = Mathf.PerlinNoise((pos + Level.biomeSeed)/20, 0); 
         if (type == 0) return TerrainType.PLAIN;
         if (type == 1)
         {
@@ -273,6 +273,7 @@ class RockBiome : Biome
 {
     public RockBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
     {
+        beeFrequency = 0.1f;
         FENCE_SCALE = new Vector3(0.26f, 0.26f, 0.12f);
         //more rocks
         if (chunk.decorationNoise > 0.5f)
@@ -286,7 +287,6 @@ class RockBiome : Biome
         longObstacles_2 = new int[] { 2,3,3 };
         longObstacles_3 = new int[] { 6,7,7 };
         fixedObstacle = new int[6] {12,11, 2,3,6,7 };
-        beeFrequency = 0.0f;
     }
 
 
@@ -413,6 +413,7 @@ class RockyMountainBiome : Biome
 {
     public RockyMountainBiome(TerrainType type, Level level, Chunk chunk) : base(type, level, chunk)
     {
+        beeFrequency = 0.1f;
         fixedObstacle = new int[6] { 13,10, 2, 3, 6, 7 };
         longObstacles_2 = new int[] { 2, 3, 3 };
         longObstacles_3 = new int[] { 6, 7, 7 };
@@ -426,7 +427,6 @@ class RockyMountainBiome : Biome
         {
             obstaclePool = new int[] { 11, 12, 14, 15, 9,10,11,9,10, 11, 9,10, 11, 5, 6, 7, 9, 10, 11 };
         }
-        beeFrequency = 0.0f;
     }
 
 

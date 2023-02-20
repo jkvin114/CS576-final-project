@@ -6,14 +6,10 @@ public class Follow_player : MonoBehaviour
 {
     bool shaking=false;
     float shakeElapsed = 0;
+    public bool mobile=false;
     void Update()
     {
         //   transform.position = player.transform.position + new Vector3(-0.7f, 2, 0);
-        
-        
-           
-
-        
     }
     public void Follow(Transform tf)
     {
@@ -29,8 +25,17 @@ public class Follow_player : MonoBehaviour
         {
             shaking = false;
         }
-         transform.position = new Vector3(tf.position.x - 0.8f, 3f + y, 0.925f + z);
-        //transform.position = new Vector3(tf.position.x + 0.2f, 6 + y, 0.925f + z);
+        if(mobile)
+        {
+            transform.position = new Vector3(tf.position.x + 1.1f, 4.5f + y, 0.925f + z);
+        }
+        else
+        {
+            transform.position = new Vector3(tf.position.x - 0.8f, 3f + y, 0.925f + z);
+        }
+         
+        //
+
     }
     public void Shake()
     {

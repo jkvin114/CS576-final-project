@@ -18,7 +18,7 @@ public class ChickenPrey : Prey
         transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
 
         player = GameObject.Find("Fox");
-        reactionDistance = Random.Range(4, 7);
+        reactionDistance = Random.Range(2, 4);
         Debug.Log(player);
         if (Random.Range(0, 10) == 0) reactionDistance = 0.6f;
     }

@@ -14,7 +14,7 @@ public class RabbitPrey : Prey
         animator.SetTrigger("Idle");
 
         player = GameObject.Find("Fox");
-        reactionDistance = Random.Range(4, 7);
+        reactionDistance = Random.Range(2, 4);
         if(Random.Range(0,10)== 0 ) reactionDistance=0.6f;
     }
 

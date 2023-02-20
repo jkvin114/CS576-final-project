@@ -290,7 +290,7 @@ class RandomObstacleGenerator : ObstacleGenerator
             {
                 for (int j = 0; j < LANES; j++)
                 {
-                    bool bee = (Random.Range(0.0f, 1.0f) < beeFrequency && difficulty > 4);
+                    bool bee = (Random.Range(0.0f, 1.0f) < beeFrequency && difficulty > 10);
                     if (j < LANES - 1 && grid[i, j] != GridInit.OBSTACLE && grid[i, j + 1] == GridInit.OBSTACLE && Random.Range(0.0f, 1.0f) < 0.3f)
                     {
                         grid[i, j + 1] = GridInit.EMPTY;
@@ -524,6 +524,7 @@ class RandomObstacleGenerator : ObstacleGenerator
                 else//eagle
                 {
                     if (!eagle) continue;
+                    if (difficulty < 30 && (biome == TerrainType.FOREST || biome == TerrainType.MOUNTAIN)) continue;
                     //  grid[i, enemyLane] = GridInit.ENEMY;
                     eagles.Add(new int[] { i, enemyLane });
                     grid[i, enemyLane] = GridInit.ENEMY;

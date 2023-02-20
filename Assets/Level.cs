@@ -270,7 +270,7 @@ public class Level : MonoBehaviour
     {
         if(count==6)
         {
-            foxPlayer.GetComponent<Fox>().increaseSpeedBy(0.6f);
+            foxPlayer.GetComponent<Fox>().increaseSpeedBy(0.4f);
         }
         if (count == 10)
         {

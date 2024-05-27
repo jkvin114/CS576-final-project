@@ -4,5 +4,5 @@
 
 - [Demo Video](https://youtu.be/xcrIoVr5sZg)
 
-- [Download the Game](https://drive.google.com/file/d/1A9d7DJdzaY52hbxixXM6q8xkj2ylJpNp/view?usp=sharing)
+- [Download the Game](https://drive.google.com/file/d/1-ukmwDLGg07rYn3xiIVwYHS7LgvwY4He/view?usp=sharing)
 
